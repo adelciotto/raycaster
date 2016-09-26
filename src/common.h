@@ -2,10 +2,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
 #include <stdint.h>
-#include <string.h>
+#include <memory>
 #include <SDL2/SDL.h>
-#include "util.h"
+#include "utils.h"
+#include "logger.h"
 
 #endif // COMMON_H

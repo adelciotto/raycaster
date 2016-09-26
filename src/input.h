@@ -1,21 +1,28 @@
 #ifndef INPUT_H
+#define INPUT_H
 
 #include "common.h"
 
-typedef int KeyCode;
+enum KeyCodes {
+    keyUp = SDL_SCANCODE_UP,
+    keyDown = SDL_SCANCODE_DOWN,
+    keyLeft = SDL_SCANCODE_LEFT,
+    keyRight = SDL_SCANCODE_RIGHT,
+    keyEsc = SDL_SCANCODE_ESCAPE
+};
 
-extern const KeyCode KeyUp;
-extern const KeyCode KeyDown;
-extern const KeyCode KeyLeft;
-extern const KeyCode KeyRight;
-extern const KeyCode KeyEsc;
+class Input {
+    const uint8_t *keyStates;
+    std::unique_ptr<uint8_t[]> previousKeyStates;
 
-void Input_Init();
-void Input_Destroy();
-bool Input_IsKeyDown(KeyCode code);
-bool Input_IsKeyUp(KeyCode code);
-bool Input_IsKeyPressed(KeyCode code);
-void Input_PollEvent(SDL_Event *e);
-void Input_Update();
+public:
+    Input();
+
+    bool isKeyDown(KeyCodes key) const;
+    bool isKeyUp(KeyCodes key) const;
+    bool isKeyPressed(KeyCodes key) const;
+    void pollEvent(SDL_Event *e);
+    void update();
+};
 
 #endif // INPUT_H

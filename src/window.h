@@ -1,22 +1,25 @@
 #ifndef WINDOW_H
+#define WINDOW_H
 
 #include "common.h"
 
-typedef struct window_t {
+enum WindowModes {
+    fullscreen = SDL_WINDOW_FULLSCREEN,
+    fullscreenDesktop = SDL_WINDOW_FULLSCREEN_DESKTOP,
+    windowed = 0
+};
+
+class Window {
     int width;
     int height;
-    SDL_Window *sdlWindow;
-} Window;
+    std::unique_ptr<SDL_Window, void(*)(SDL_Window *)> sdlWindow;
 
-typedef uint32_t WindowMode;
+public:
+    Window(int width, int height, bool fullscreen);
 
-extern const WindowMode Fullscreen;
-extern const WindowMode FullscreenDesktop;
-extern const WindowMode Windowed;
-
-void Window_Init(Window *w, int width, int height, bool fullscreen);
-void Window_Destroy(Window *window);
-void Window_SetSize(int width, int height);
-void Window_SetMode(Window *w, WindowMode mode);
+    SDL_Window *getSDLWindow() const { return sdlWindow.get(); }
+    void setSize(int width, int height);
+    void setMode(WindowModes mode);
+};
 
 #endif // WINDOW_H
