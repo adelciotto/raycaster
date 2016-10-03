@@ -129,18 +129,21 @@ void Graphics::drawLine(int x1, int y1, int x2, int y2, uint32_t color) {
 }
 
 void Graphics::drawRect(int x, int y, int width, int height, uint32_t color) {
-    int x2 = x + width;
-    int y2 = y + height;
+    const SDL_Rect rect{x, y, width, height};
 
-    if (width > height) {
-        for (int i = y; i <= y2; i++) {
-            drawHorizLine(i, x, x2, color); 
-        }
-    } else {
-        for (int i = x; i <= x2; i++) {
-            drawVertLine(i, y, y2, color); 
-        }
-    }
+    SDL_FillRect(screen.get(), &rect, color);
+
+    //int x2 = x + width;
+    //int y2 = y + height;
+    //if (width > height) {
+        //for (int i = y; i <= y2; i++) {
+            //drawHorizLine(i, x, x2, color); 
+        //}
+    //} else {
+        //for (int i = x; i <= x2; i++) {
+            //drawVertLine(i, y, y2, color);
+        //}
+    //}
 }
 
 void Graphics::setPixel(int x, int y, uint32_t color) {
