@@ -17,6 +17,14 @@ namespace utils {
         return std::string(buf, buf + size - 1);
     }
 
+    template<typename... Args>
+    inline void printfflush(const std::string& format, Args... args) {
+        const auto fmt = stringFormat("\r%s", format.c_str());
+
+        printf(fmt.c_str(), args ...);
+        fflush(stdout);
+    }
+
     inline std::vector<std::string> stringSplit(const std::string& s, char delim) {
         std::stringstream ss(s);
         std::string item;

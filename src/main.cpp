@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
         draw(graphics, map);
         float renderTime = renderTimer.end();
 
-        renderTimer.print(1000, "render ms: %f\n", renderTime);
+        renderTimer.print(1000, "render ms: %f", renderTime);
 
         timer.sleep(1);
     }

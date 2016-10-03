@@ -27,7 +27,7 @@ void CoreTimer::step() {
         previousFpsUpdate = currentTime;
         frames = 0;
 
-        //printf("FPS: %.2f\n", fps);
+        //utils::printfflush("fps: %.2f", fps);
     }
 }
 

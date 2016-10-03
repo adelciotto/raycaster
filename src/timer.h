@@ -39,7 +39,7 @@ public:
         uint32_t printDelta = now - previousPrintTime;
 
         if (printDelta > interval) {
-            printf(format.c_str(), args ...);
+            utils::printfflush(format.c_str(), args ...);
             previousPrintTime = now;
         }
     }
