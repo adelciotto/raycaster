@@ -1,3 +1,4 @@
+#include "coretimer.h"
 #include "timer.h"
 #include "window.h"
 #include "graphics.h"
@@ -80,7 +81,8 @@ int main(int argc, char **argv) {
     Input input;
     Player player(7, 14, 66.0f);
     Map map(&player, args.mapFile);
-    Timer timer;
+    CoreTimer timer;
+    Timer renderTimer;
 
     running = true;
     while (running) {
@@ -88,7 +90,12 @@ int main(int argc, char **argv) {
 
         timer.step();
         update(timer.getDelta(), input, player, map);
+
+        renderTimer.start();
         draw(graphics, map);
+        float renderTime = renderTimer.end();
+
+        renderTimer.print(1000, "render ms: %f\n", renderTime);
 
         timer.sleep(1);
     }

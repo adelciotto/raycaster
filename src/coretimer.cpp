@@ -1,8 +1,8 @@
-#include "timer.h"
+#include "coretimer.h"
 
 const float fpsUpdateFreq = 1.0f;
 
-Timer::Timer() 
+CoreTimer::CoreTimer() 
     : startTime(SDL_GetTicks()),
       currentTime(0),
       previousTime(SDL_GetTicks()),
@@ -11,7 +11,7 @@ Timer::Timer()
       frames(0),
       delta(0.0f) { }
 
-void Timer::step() {
+void CoreTimer::step() {
     frames++;
 
     // Calculate the delta-time (in seconds) between now and the last call to Timer.step.
@@ -27,11 +27,11 @@ void Timer::step() {
         previousFpsUpdate = currentTime;
         frames = 0;
 
-        printf("FPS: %.2f\n", fps);
+        //printf("FPS: %.2f\n", fps);
     }
 }
 
-void Timer::sleep(uint32_t ms) {
+void CoreTimer::sleep(uint32_t ms) {
     if (ms > 0) {
         SDL_Delay(ms);
     }
