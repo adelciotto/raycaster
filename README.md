@@ -2,6 +2,8 @@
 
 A WIP old school ray casting program.
 
+![preview](res/previews/preview.png)
+
 ![preview-gif](res/previews/rayc.gif)
 
 ![preview-resize](res/previews/rayc_resize.gif)
