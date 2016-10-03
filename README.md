@@ -42,6 +42,7 @@ Then run the `rayc` executable.
 -width <uint>  // The window width, defaults to 640.
 -height <uint> // The window height, defaults to 360.
 -fullscreen    // Whether or not to run in fullscreen mode. Defaults to off.
+-novsync       // Disable vsync. VSync is enabled by default.
 -map <string>  // The map file to load. Defaults to assets/maps/small.txt.
 
 // example

@@ -17,7 +17,7 @@ class Graphics {
     SDLSurfacePtr screen;
 
 public:
-    Graphics(const Window& win);
+    Graphics(const Window& win, bool vsync);
 
     int width() const { return bufferWidth; }
     int height() const { return bufferHeight; }

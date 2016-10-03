@@ -14,6 +14,7 @@ struct CmdArguments {
     int width;
     int height;
     std::string mapFile;
+    bool novsync;
 };
 
 CmdArguments parseCmdOpts(const InputParser& inputParser) {
@@ -21,9 +22,15 @@ CmdArguments parseCmdOpts(const InputParser& inputParser) {
     const int height = std::stoi(inputParser.getOption("-height", "360"));
     const std::string mapFile = inputParser.getOption("-map", "assets/maps/small.txt");
     const bool fullscreen = inputParser.optionExists("-fullscreen");
+    const bool novsync = inputParser.optionExists("-novsync");
     
-    logger::info("Using w: %d, h: %d, fullscreen: %d\n", width, height, fullscreen);
-    return CmdArguments{fullscreen, width, height, mapFile};
+    logger::info("Using w: %d, h: %d, fullscreen: %d, vsync: %d\n", 
+                 width, 
+                 height,
+                 fullscreen,
+                 !novsync
+    );
+    return CmdArguments{fullscreen, width, height, mapFile, novsync};
 }
 
 void processEvents(Input& input) {
@@ -77,7 +84,7 @@ int main(int argc, char **argv) {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
 
     Window window(args.width, args.height, args.fullscreen);
-    Graphics graphics(window);
+    Graphics graphics(window, !args.novsync);
     Input input;
     Player player(7, 14, 66.0f);
     Map map(&player, args.mapFile);

@@ -6,14 +6,14 @@ const int defaultBufferWidth = 640;
 const int defaultBufferHeight = 360;
 const int bytesPerPixel = 4;
 
-static SDL_Renderer *createSDLRenderer(const Window& win);
+static SDL_Renderer *createSDLRenderer(const Window& win, bool vsync);
 static SDL_Texture *createSDLTexture(SDL_Renderer *rend, int width, int height);
 static SDL_Surface *createSDLSurface(int width, int height);
 static void destroySDLRenderer(SDL_Renderer *rend);
 static void destroySDLTexture(SDL_Texture *tex);
 static void destroySDLSurface(SDL_Surface *surface);
 
-Graphics::Graphics(const Window& win)  
+Graphics::Graphics(const Window& win, bool vsync)
     : bufferWidth(defaultBufferWidth),
       bufferHeight(defaultBufferHeight),
       sdlRenderer(nullptr, SDL_DestroyRenderer),
@@ -25,7 +25,7 @@ Graphics::Graphics(const Window& win)
         );
     };
 
-    sdlRenderer = SDLRendererPtr(createSDLRenderer(win), destroySDLRenderer);
+    sdlRenderer = SDLRendererPtr(createSDLRenderer(win, vsync), destroySDLRenderer);
 
     if (sdlRenderer.get() == nullptr) handleError("SDLRenderer");
     logger::info("SDL Renderer created\n");
@@ -156,9 +156,10 @@ void Graphics::setPixel(int x, int y, uint32_t color) {
     *bufp = color;
 }
 
-static SDL_Renderer *createSDLRenderer(const Window& win) {
-    int flags = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
+static SDL_Renderer *createSDLRenderer(const Window& win, bool vsync) {
+    int flags = SDL_RENDERER_ACCELERATED;
 
+    flags = vsync ? flags | SDL_RENDERER_PRESENTVSYNC : flags;
     return SDL_CreateRenderer(win.getSDLWindow(), -1, flags);
 }
 
