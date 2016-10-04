@@ -3,13 +3,14 @@
 
 #include <vector>
 #include "mathutils.h"
+#include "texture.h"
 
 struct Player;
 class Graphics;
 
 class Map {
     Player *player;
-    std::vector<uint32_t> textures[8];
+    Texture textures[8];
     std::vector<uint8_t> worldMap;
     uint32_t mapWidth, mapHeight;
     mathutils::Vec2 rayPos;
@@ -24,7 +25,7 @@ public:
     void draw(Graphics& graphics);
 
 private:
-    void generateTextures();
+    void loadTextures();
     void loadFile(const std::string& file);
     float castRay(float cameraX);
     void resolveCollisions(float dt);

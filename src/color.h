@@ -39,10 +39,16 @@ struct Color {
     }
 
     inline uint32_t toHex() const {
-        return (uint8_t(r*255)<<24) + 
-            (uint8_t(g*255)<<16) + 
-            (uint8_t(b*255)<<8) + 
-            uint8_t(a*255);
+        return Color::toHex(
+            uint8_t(r*255),
+            uint8_t(g*255),
+            uint8_t(b*255),
+            uint8_t(a*255)
+        );
+    }
+
+    static uint32_t toHex(uint8_t r, uint8_t g, uint8_t b, uint8_t a) {
+        return (r<<24) + (g<<16) + (b<<8) + a;
     }
 };
 

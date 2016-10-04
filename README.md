@@ -52,6 +52,7 @@ Then run the `rayc` executable.
 ## Third-party code
 
 - [SDL2](https://www.libsdl.org/download-2.0.php)
+- [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h)
 - [Generic Makefile](https://github.com/mbcrawfo/GenericMakefile) by [mbcrawfo](https://github.com/mbcrawfo)
 
 ## Resources
@@ -59,3 +60,13 @@ Then run the `rayc` executable.
 - [lodev.org](http://lodev.org/cgtutor/raycasting.html)
 - [permadi.com](http://permadi.com/1996/05/ray-casting-tutorial-table-of-contents/)
 - [Chocolate Wolfenstein 3D](https://github.com/fabiensanglard/Chocolate-Wolfenstein-3D)
+
+## License & Legal
+
+This code-base is released under the MIT License.
+
+All dependencies are released under their own respective licenses.
+
+For now some images are taken from ID Sofwares Wolfenstein 3D to use as
+placeholders. These are
+copyright of ID Software and I claim no ownership for any of these assets.

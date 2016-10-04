@@ -6,6 +6,7 @@
 #include "player.h"
 #include "graphics.h"
 #include "color.h"
+#include "texture.h"
 
 const int defaultMapWidth = 24;
 const int defaultMapHeight = 24;
@@ -43,33 +44,37 @@ Map::Map(Player *player, const std::string& file)
     : player(player),
       mapX(0),
       mapY(0) {
-    generateTextures();    
+    loadTextures();
     loadFile(file);
 }
 
-// TODO: Load map textures from files..
-// For now generate really random looking textures with some simple math.
-void Map::generateTextures() {
-    // Resize each of the texture vectors.
-    for (auto &t: textures) {
-        t.resize(texWidth * texHeight);
-    }
+//void Map::generateTextures() {
+    //for (int x = 0; x < texWidth; x++) {
+        //for (int y = 0; y < texHeight; y++) {
+            //int i = texWidth * y + x;
+            //int xorcolor = (x * 512 / texWidth) ^ (y * 512 / texHeight);
 
-    for (int x = 0; x < texWidth; x++) {
-        for (int y = 0; y < texHeight; y++) {
-            int i = texWidth * y + x;
-            int xorcolor = (x * 512 / texWidth) ^ (y * 512 / texHeight);
+            //textures[0][i] = 0xFF000000 * (x != y && x != texWidth - y);
+            //textures[1][i] = 0x7F00FFFF * (x % 16 && y % 16);
+            //textures[2][i] = xorcolor + 256 * xorcolor;
+            ////textures[3][i] = 0x0000FFFF * (x % 16 && y % 16);
+            //textures[4][i] = 512 * xorcolor;
+            //textures[5][i] = 0xFF8000FF * (x % 16 && y % 16);
+            //textures[6][i] = 128 * xorcolor;
+            //textures[7][i] = 0xCCCCCCCC;
+        //}
+    //}
+//}
 
-            textures[0][i] = 0xFF000000 * (x != y && x != texWidth - y);
-            textures[1][i] = 0x7F00FFFF * (x % 16 && y % 16);
-            textures[2][i] = xorcolor + 256 * xorcolor;
-            textures[3][i] = 0x0000FFFF * (x % 16 && y % 16);
-            textures[4][i] = 512 * xorcolor;
-            textures[5][i] = 0xFF8000FF * (x % 16 && y % 16);
-            textures[6][i] = 128 * xorcolor;
-            textures[7][i] = 0xCCCCCCCC;
-        }
-    }
+void Map::loadTextures() {
+    textures[0].fromFile("assets/textures/texture-0.png");
+    textures[1].fromFile("assets/textures/texture-1.png");
+    textures[2].fromFile("assets/textures/texture-2.png");
+    textures[3].fromFile("assets/textures/texture-3.png");
+    textures[4].fromFile("assets/textures/texture-4.png");
+    textures[5].fromFile("assets/textures/texture-5.png");
+    textures[6].fromFile("assets/textures/texture-6.png");
+    textures[7].fromFile("assets/textures/texture-7.png");
 }
 
 void Map::loadFile(const std::string& file) {
@@ -267,6 +272,7 @@ void Map::drawFlatColoredWall(Graphics& graphics, int x, int drawStart, int draw
 
 void Map::drawTexturedWall(Graphics& graphics, int x, float distance, int lineHeight, int drawStart, int drawEnd) {
     int texNum = worldMap[mapWidth * mapX + mapY] - 1;
+    Texture *tex = &textures[texNum];
     float wallX;
 
     if (side == 0) {
@@ -277,17 +283,17 @@ void Map::drawTexturedWall(Graphics& graphics, int x, float distance, int lineHe
 
     wallX -= std::floor(wallX);
 
-    int texX = int(wallX * float(texWidth));
+    int texX = int(wallX * float(tex->width));
 
     if ((side == 0 && rayDir.x > 0) ||
         (side == 1 && rayDir.y > 0)) {
-        texX = texWidth - texX - 1;
+        texX = tex->width - texX - 1;
     }     
 
     for (int y = drawStart; y < drawEnd; y++) {
         int d = y * 256 - graphics.height() * 128 + lineHeight * 128;
-        int texY = ((d * texHeight) / lineHeight) / 256;
-        uint32_t color = textures[texNum][texHeight * texY + texX];
+        int texY = ((d * tex->height) / lineHeight) / 256;
+        uint32_t color = tex->pixels[tex->height * texY + texX];
 
         if (side == 1) {
             color = (color & 0xFEFEFEFE) >> 1;
