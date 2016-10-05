@@ -1,21 +1,10 @@
-#ifndef MATHUTIL_H
-#define MATHUTIL_H
+#ifndef VEC2_H
+#define VEC2_H
 
 #include <cmath>
 #include <ostream>
 
 namespace mathutils {
-    const float _toRadians = M_PI / 180.0f;
-    const float _toDegrees = 180.0f / M_PI;
-
-    inline float toRadians(float degrees) {
-        return degrees * _toRadians;
-    }
-
-    inline float toDegrees(float radians) {
-        return radians * _toDegrees;
-    }
-
     struct Vec2 {
         float x;
         float y;
@@ -55,35 +44,11 @@ namespace mathutils {
             return *this;
         }
 
-        void set(float s) { 
-            this->x = s;
-            this->y = s;
-        }
-        
-        void set(float x, float y) { 
-            this->x = x;
-            this->y = y;
-        }
-
-        void set(const Vec2& v) { 
-            this->x = v.x;
-            this->y = v.y;
-        }
-
-        float length() {
-            return (float)sqrt(x*x + y*y);
-        }
-
-        void rotate(float radians) {
-            float cs = (float)cos(radians);
-            float sn = (float)sin(radians);
-
-            float px = x * cs - y * sn;
-            float py = x * sn + y * cs;
-
-            x = px;
-            y = py;
-        }
+        void set(float s);
+        void set(float x, float y);
+        void set(const Vec2& v);
+        float length();
+        void rotate(float radians);
 
         friend std::ostream& operator<< (std::ostream& out, const Vec2& v);
     };
@@ -91,6 +56,6 @@ namespace mathutils {
     inline std::ostream& operator<< (std::ostream& out, const Vec2& v) {
         return out << "[x: " << v.x << ", y: " << v.y << "]";
     }
-};
+}
 
-#endif // MATHUTIL_H
+#endif // VEC2_H

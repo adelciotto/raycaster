@@ -7,17 +7,19 @@
 #include "player.h"
 #include "input_parser.h"
 
-bool running = false;
+static bool running = false;
 
-struct CmdArguments {
-    bool fullscreen;
-    int width;
-    int height;
-    std::string mapFile;
-    bool novsync;
+namespace {
+    struct Settings {
+        bool fullscreen;
+        int width;
+        int height;
+        std::string mapFile;
+        bool novsync;
+    };
 };
 
-CmdArguments parseCmdOpts(const InputParser& inputParser) {
+static Settings parseCmdOpts(const InputParser& inputParser) {
     const int width = std::stoi(inputParser.getOption("-width", "640"));
     const int height = std::stoi(inputParser.getOption("-height", "360"));
     const std::string mapFile = inputParser.getOption("-map", "assets/maps/small.txt");
@@ -30,10 +32,10 @@ CmdArguments parseCmdOpts(const InputParser& inputParser) {
                  fullscreen,
                  !novsync
     );
-    return CmdArguments{fullscreen, width, height, mapFile, novsync};
+    return Settings{fullscreen, width, height, mapFile, novsync};
 }
 
-void processEvents(Input& input) {
+static void processEvents(Input& input) {
     SDL_Event e;
 
     if (SDL_PollEvent(&e)) {
@@ -45,7 +47,7 @@ void processEvents(Input& input) {
     }
 }
 
-void update(float dt, Input& input, Player& player, Map& map) {
+static void update(float dt, Input& input, Player& player, Map& map) {
     if (input.isKeyPressed(KeyCodes::keyEsc)) {
         running = false;
     }
@@ -71,7 +73,7 @@ void update(float dt, Input& input, Player& player, Map& map) {
     map.update(dt);
 }
 
-void draw(Graphics& graphics, Map& map) {
+static void draw(Graphics& graphics, Map& map) {
     map.draw(graphics);
 
     graphics.present();
@@ -86,23 +88,23 @@ int main(int argc, char **argv) {
     Window window(args.width, args.height, args.fullscreen);
     Graphics graphics(window, !args.novsync);
     Input input;
-    Player player(7, 14, 66.0f);
+    Player player(22, 11.5, 66.0f);
     Map map(&player, args.mapFile);
     CoreTimer timer;
-    Timer renderTimer;
+    Timer frameTimer;
 
     running = true;
     while (running) {
         processEvents(input);
 
         timer.step();
+        frameTimer.start();
         update(timer.getDelta(), input, player, map);
 
-        renderTimer.start();
         draw(graphics, map);
-        float renderTime = renderTimer.end();
+        float frameTime = frameTimer.end();
 
-        renderTimer.print(1000, "render ms: %f", renderTime);
+        frameTimer.print(1000, "frametime ms: %f", frameTime);
 
         timer.sleep(1);
     }

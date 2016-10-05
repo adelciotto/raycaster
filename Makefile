@@ -7,6 +7,8 @@ CC ?= clang++
 SRC_EXT = cpp
 # Path to the source directory, relative to the makefile
 SRC_PATH = ./src
+# Path to the include directory, relative to the makefile
+INCLUDE_PATH = ./src/include
 # Path to vendor include directory
 VENDOR_PATH = ./vendor
 # Space-separated pkg-config libraries used by this project
@@ -18,7 +20,7 @@ RCOMPILE_FLAGS = -D NDEBUG
 # Additional debug-specific flags
 DCOMPILE_FLAGS = -D DEBUG
 # Add additional include paths
-INCLUDES = -I $(SRC_PATH) -I ${VENDOR_PATH} -I /Library/Frameworks/SDL2.framework/Headers
+INCLUDES = -I $(INCLUDE_PATH) -I ${VENDOR_PATH} -I /Library/Frameworks/SDL2.framework/Headers
 # General linker settings
 LINK_FLAGS = -framework SDL2
 # Additional release-specific linker settings

@@ -272,7 +272,7 @@ void Map::drawFlatColoredWall(Graphics& graphics, int x, int drawStart, int draw
 
 void Map::drawTexturedWall(Graphics& graphics, int x, float distance, int lineHeight, int drawStart, int drawEnd) {
     int texNum = worldMap[mapWidth * mapX + mapY] - 1;
-    Texture *tex = &textures[texNum];
+    const Texture& tex = textures[texNum];
     float wallX;
 
     if (side == 0) {
@@ -283,17 +283,17 @@ void Map::drawTexturedWall(Graphics& graphics, int x, float distance, int lineHe
 
     wallX -= std::floor(wallX);
 
-    int texX = int(wallX * float(tex->width));
+    int texX = int(wallX * float(tex.width));
 
     if ((side == 0 && rayDir.x > 0) ||
         (side == 1 && rayDir.y > 0)) {
-        texX = tex->width - texX - 1;
+        texX = tex.width - texX - 1;
     }     
 
     for (int y = drawStart; y < drawEnd; y++) {
         int d = y * 256 - graphics.height() * 128 + lineHeight * 128;
-        int texY = ((d * tex->height) / lineHeight) / 256;
-        uint32_t color = tex->pixels[tex->height * texY + texX];
+        int texY = ((d * tex.height) / lineHeight) / 256;
+        uint32_t color = tex.pixels[tex.height * texY + texX];
 
         if (side == 1) {
             color = (color & 0xFEFEFEFE) >> 1;

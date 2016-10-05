@@ -1,7 +1,7 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "mathutils.h"
+#include "mathutils/vec2.h"
 
 enum Direction { 
     forwards = 1,

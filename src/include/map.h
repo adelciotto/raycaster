@@ -2,7 +2,7 @@
 #define MAP_H
 
 #include <vector>
-#include "mathutils.h"
+#include "mathutils/vec2.h"
 #include "texture.h"
 
 struct Player;

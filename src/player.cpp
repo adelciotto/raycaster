@@ -1,5 +1,5 @@
 #include "player.h"
-#include "mathutils.h"
+#include "mathutils/mathutils.h"
 
 const float moveSpeed = 3.0f;
 const float rotationSpeed = 2.0f;

@@ -4,9 +4,9 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-const int defaultWidth = 64;
-const int defaultHeight = 64;
-const int defaultBpp = 4;
+static const int defaultWidth = 64;
+static const int defaultHeight = 64;
+static const int defaultBpp = 4;
 
 Texture::Texture() 
     : width(defaultWidth),
