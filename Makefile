@@ -8,7 +8,7 @@ SRC_EXT = cpp
 # Path to the source directory, relative to the makefile
 SRC_PATH = ./src
 # Path to the include directory, relative to the makefile
-INCLUDE_PATH = ./src/include
+INCLUDE_PATH = ./include
 # Path to vendor include directory
 VENDOR_PATH = ./vendor
 # Space-separated pkg-config libraries used by this project

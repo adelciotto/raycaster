@@ -20,8 +20,8 @@ namespace {
 };
 
 static Settings parseCmdOpts(const InputParser& inputParser) {
-    const int width = std::stoi(inputParser.getOption("-width", "640"));
-    const int height = std::stoi(inputParser.getOption("-height", "360"));
+    const int width = std::stoi(inputParser.getOption("-width", "1280"));
+    const int height = std::stoi(inputParser.getOption("-height", "720"));
     const std::string mapFile = inputParser.getOption("-map", "assets/maps/small.txt");
     const bool fullscreen = inputParser.optionExists("-fullscreen");
     const bool novsync = inputParser.optionExists("-novsync");
@@ -75,6 +75,8 @@ static void update(float dt, Input& input, Player& player, Map& map) {
 
 static void draw(Graphics& graphics, Map& map) {
     map.draw(graphics);
+
+    graphics.drawString("Raycaster debug", 10, 10, 0xFFFFFFFF);
 
     graphics.present();
 }

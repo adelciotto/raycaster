@@ -15,6 +15,7 @@ class Graphics {
     SDLRendererPtr sdlRenderer;
     SDLTexturePtr sdlTexture;
     SDLSurfacePtr screen;
+    bool bitmapFont[256][8][8];
 
 public:
     Graphics(const Window& win, bool vsync);
@@ -27,7 +28,12 @@ public:
     void drawHorizLine(int y, int x1, int x2, uint32_t color);
     void drawLine(int x1, int y1, int x2, int y2, uint32_t color);
     void drawRect(int x, int y, int width, int height, uint32_t color);
+    void drawString(const std::string& text, int x, int y, uint32_t color);
     void setPixel(int x, int y, uint32_t color);
+
+private:
+    void generateFont();
+    void drawLetter(unsigned char n, int x, int y, uint32_t color);
 };
 
 #endif // GRAPHICS_H

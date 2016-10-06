@@ -8,9 +8,9 @@
 #include "color.h"
 #include "texture.h"
 
-const int defaultMapWidth = 24;
-const int defaultMapHeight = 24;
-const int defaultWorldMap[defaultMapWidth * defaultMapHeight] = {
+static const int defaultMapWidth = 24;
+static const int defaultMapHeight = 24;
+static const int defaultWorldMap[defaultMapWidth * defaultMapHeight] = {
     4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,7,7,7,7,7,7,7,7,
     4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,7,
     4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,
@@ -36,9 +36,7 @@ const int defaultWorldMap[defaultMapWidth * defaultMapHeight] = {
     4,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,0,0,0,2,
     4,4,4,4,4,4,4,4,4,4,1,1,1,2,2,2,2,2,2,3,3,3,3,3
 };
-const int texWidth = 64;
-const int texHeight = 64;
-const int collisionOffset = 4;
+static const int collisionOffset = 4;
 
 Map::Map(Player *player, const std::string& file) 
     : player(player),
@@ -168,7 +166,7 @@ void Map::resolveCollisions(float delta) {
 
 void Map::draw(Graphics& graphics) {
     const int w = graphics.width();
-    const int halfH = graphics.height() / 2;
+    const int halfH = graphics.height() >> 1;
 
     // Draw the ceiling. For now the ceiling and floor are simply flat
     // color rectangles drawn before the walls.
@@ -249,7 +247,6 @@ void Map::drawWall(Graphics& graphics, int x, float distance) {
     if (drawStart < 0) drawStart = 0;
     if (drawEnd >= h) drawEnd = h - 1;
 
-    //drawFlatColoredWall(graphics, x, drawStart, drawEnd);
     drawTexturedWall(graphics, x, distance, lineHeight, drawStart, drawEnd);
 }
 

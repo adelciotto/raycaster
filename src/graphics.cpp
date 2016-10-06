@@ -2,9 +2,11 @@
 #include "window.h"
 #include "color.h"
 
-const int defaultBufferWidth = 640;
-const int defaultBufferHeight = 360;
-const int bytesPerPixel = 4;
+#include "stb_image.h"
+
+static const int defaultBufferWidth = 640;
+static const int defaultBufferHeight = 360;
+static const int bytesPerPixel = 4;
 
 static SDL_Renderer *createSDLRenderer(const Window& win, bool vsync);
 static SDL_Texture *createSDLTexture(SDL_Renderer *rend, int width, int height);
@@ -48,6 +50,8 @@ Graphics::Graphics(const Window& win, bool vsync)
 
     if (screen.get() == nullptr) handleError("SDLSurface");
     logger::info("SDL Surface created\n");
+
+    generateFont();
 }
 
 void Graphics::clear(uint32_t color) {
@@ -146,6 +150,13 @@ void Graphics::drawRect(int x, int y, int width, int height, uint32_t color) {
     //}
 }
 
+void Graphics::drawString(const std::string& text, int x, int y, uint32_t color) {
+    for (size_t i = 0; i < text.size(); i++) {
+        drawLetter(text[i], x, y, color);
+        x += 8;
+    }
+}
+
 void Graphics::setPixel(int x, int y, uint32_t color) {
     if (x < 0 || x >= bufferWidth || y < 0 || y >= bufferHeight) return;
 
@@ -154,6 +165,32 @@ void Graphics::setPixel(int x, int y, uint32_t color) {
 
     bufp = (uint32_t *)screenPtr->pixels + y * screenPtr->pitch / bytesPerPixel + x;
     *bufp = color;
+}
+
+void Graphics::generateFont() {
+    int w, h, bpp;
+    uint8_t *data = stbi_load("assets/textures/bitmapfont.png", &w, &h, &bpp, 0);
+
+    for (int c = 0; c < 256; c++) {
+        for (int y = 0; y < 8; y++) {
+            for (int x = 0; x < 8; x++) {
+                int i = w * (8 * (c / 16) + y) + (8 * (c % 16) + x);
+                bitmapFont[c][x][y] = data[i] == 0xFF;
+            }
+        }
+    }
+
+    stbi_image_free(data);
+}
+
+void Graphics::drawLetter(unsigned char n, int x, int y, uint32_t color) {
+    for (int v = 0; v < 8; v++) {
+        for (int u = 0; u < 8; u++) {
+            if (bitmapFont[n][u][v]) {
+                setPixel(x + u, y + v, color);
+            }
+        }
+    }
 }
 
 static SDL_Renderer *createSDLRenderer(const Window& win, bool vsync) {
