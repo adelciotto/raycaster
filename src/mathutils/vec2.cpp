@@ -1,4 +1,5 @@
 #include "mathutils/vec2.h"
+#include "utils.h"
 
 namespace mathutils {
     void Vec2::set(float s) { 
@@ -29,5 +30,9 @@ namespace mathutils {
 
         x = px;
         y = py;
+    }
+
+    std::string Vec2::toString() {
+        return utils::stringFormat("[x: %.2f, y: %.2f]", x, y);
     }
 }

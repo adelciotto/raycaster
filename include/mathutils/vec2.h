@@ -49,6 +49,7 @@ namespace mathutils {
         void set(const Vec2& v);
         float length();
         void rotate(float radians);
+        std::string toString();
 
         friend std::ostream& operator<< (std::ostream& out, const Vec2& v);
     };

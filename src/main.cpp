@@ -77,16 +77,22 @@ static void draw(Graphics& graphics, Map& map) {
     map.draw(graphics);
 }
 
-static void printStats(Graphics& graphics, float fps, float frameTime) {
-    int nextY = graphics.drawString("debug stats", 10, 10, 0xFFFFFFFF, true, 0xFF00FFFF);
-
+static void printStats(Graphics& graphics, Player& player, float fps, float frameTime) {
     // Print the FPS.
-    const std::string fpsText = utils::stringFormat("fps: %.2f", fps);
-    nextY = graphics.drawString(fpsText, 10, nextY, 0xFFFFFFFF, true, 0xFF00FFFF);
+    std::string text = utils::stringFormat("fps: %.2f", fps);
+    int nextY = graphics.drawString(text, 10, 10, 0xFFFFFFFF, true, 0xFF00FFFF);
 
     // Print the frametime.
-    const std::string ftText = utils::stringFormat("frametime: %.2f", frameTime);
-    nextY = graphics.drawString(ftText, 10, nextY, 0xFFFFFFFF, true, 0xFF00FFFF);
+    text = utils::stringFormat("frametime: %.2f", frameTime);
+    nextY = graphics.drawString(text, 10, nextY, 0xFFFFFFFF, true, 0xFF00FFFF);
+
+    // Print the player position.
+    text = utils::stringFormat("position: %s", player.position.toString().c_str());
+    nextY = graphics.drawString(text, 10, nextY, 0xFFFFFFFF, true, 0x00FF00FF);
+
+    // Print the player position.
+    text = utils::stringFormat("direction: %s", player.direction.toString().c_str());
+    graphics.drawString(text, 10, nextY, 0xFFFFFFFF, true, 0x00FF00FF);
 }
 
 int main(int argc, char **argv) {
@@ -114,7 +120,7 @@ int main(int argc, char **argv) {
         draw(graphics, map);
         float frameTime = frameTimer.end();
 
-        printStats(graphics, time.getFPS(), frameTime);
+        printStats(graphics, player, time.getFPS(), frameTime);
         graphics.present();
 
         time.sleep(1);
