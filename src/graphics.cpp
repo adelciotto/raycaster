@@ -144,7 +144,7 @@ int Graphics::drawString(const std::string& text, int x, int y, uint32_t color) 
 
 int Graphics::drawString(const std::string& text, int x, int y, uint32_t color, bool useBg,
                          uint32_t bgColor) {
-    for (int i = 0; i < text.size(); i++) {
+    for (size_t i = 0; i < text.size(); i++) {
         drawLetter(text[i], x, y, color, useBg, bgColor);
         x += CharSize;
 

@@ -35,12 +35,23 @@ static Settings parseCmdOpts(const InputParser& inputParser) {
     return Settings{fullscreen, width, height, mapFile, novsync};
 }
 
-static void processEvents(Input& input) {
+static void processEvents(Input& input, CoreTimer& time) {
     SDL_Event e;
 
     if (SDL_PollEvent(&e)) {
         if (e.type == SDL_QUIT) {
             running = false;
+        }
+
+        if (e.type == SDL_WINDOWEVENT) {
+            if (e.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+                time.pause();
+                logger::info("Game loop paused");
+            }
+            if (e.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
+                time.resume();
+                logger::info("Game loop resumed");
+            }
         }
 
         input.pollEvent(&e);
@@ -111,18 +122,22 @@ int main(int argc, char **argv) {
 
     running = true;
     while (running) {
-        processEvents(input);
-
+        processEvents(input, time);
         time.step();
-        frameTimer.start();
-        update(time.getDelta(), input, player, map);
 
-        draw(graphics, map);
-        float frameTime = frameTimer.end();
+        float delta = time.getDelta();
 
-        printStats(graphics, player, time.getFPS(), frameTime);
+        if (!time.isPaused()) {
+            frameTimer.start();
+            update(delta, input, player, map);
+
+            draw(graphics, map);
+            float frameTime = frameTimer.end();
+
+            printStats(graphics, player, time.getFPS(), frameTime);
+        }
+
         graphics.present();
-
         time.sleep(1);
     }
 

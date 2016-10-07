@@ -41,6 +41,13 @@ void Texture::fromFile(const std::string& file) {
 
     stbi_image_free(data);
 
+    // Swap texture x/y because they will be used as vertical stripes.
+    for (int x = 0; x < w; x++) {
+        for (int y = 0; y < x; y++) {
+            std::swap(pixels[w * y + x], pixels[w * x + y]);
+        }
+    }
+
     width = w;
     height = h;
     bytesPerPixel = bbp;

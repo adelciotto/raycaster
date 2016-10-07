@@ -9,7 +9,8 @@ CoreTimer::CoreTimer()
       previousFpsUpdate(SDL_GetTicks()),
       fps(0.0f),
       frames(0),
-      delta(0.0f) { }
+      delta(0.0f),
+      paused(false) { }
 
 void CoreTimer::step() {
     frames++;
@@ -17,7 +18,9 @@ void CoreTimer::step() {
     // Calculate the delta-time (in seconds) between now and the last call to Timer.step.
     previousTime = currentTime;
     currentTime = SDL_GetTicks();
-    delta = float(currentTime - previousTime) / 1000.0f;
+    delta = paused
+          ? float(pausedTime) / 1000.0f
+          : float(currentTime - previousTime) / 1000.0f;
 
     float lastFpsUpdateTime = float(currentTime - previousFpsUpdate) / 1000.0f;
 
@@ -26,8 +29,22 @@ void CoreTimer::step() {
         fps = float(frames / fpsUpdateFreq);
         previousFpsUpdate = currentTime;
         frames = 0;
+    }
+}
 
-        //utils::printfflush("fps: %.2f", fps);
+void CoreTimer::pause() {
+    if (!paused) {
+        paused = true;
+        pausedTime = SDL_GetTicks() - startTime;
+        startTime = 0;
+    }
+}
+
+void CoreTimer::resume() {
+    if (paused) {
+        paused = false;
+        startTime = SDL_GetTicks() - pausedTime;
+        pausedTime = 0;
     }
 }
 
