@@ -75,10 +75,18 @@ static void update(float dt, Input& input, Player& player, Map& map) {
 
 static void draw(Graphics& graphics, Map& map) {
     map.draw(graphics);
+}
 
-    graphics.drawString("Raycaster debug", 10, 10, 0xFFFFFFFF);
+static void printStats(Graphics& graphics, float fps, float frameTime) {
+    int nextY = graphics.drawString("debug stats", 10, 10, 0xFFFFFFFF, true, 0xFF00FFFF);
 
-    graphics.present();
+    // Print the FPS.
+    const std::string fpsText = utils::stringFormat("fps: %.2f", fps);
+    nextY = graphics.drawString(fpsText, 10, nextY, 0xFFFFFFFF, true, 0xFF00FFFF);
+
+    // Print the frametime.
+    const std::string ftText = utils::stringFormat("frametime: %.2f", frameTime);
+    nextY = graphics.drawString(ftText, 10, nextY, 0xFFFFFFFF, true, 0xFF00FFFF);
 }
 
 int main(int argc, char **argv) {
@@ -92,23 +100,24 @@ int main(int argc, char **argv) {
     Input input;
     Player player(22, 11.5, 66.0f);
     Map map(&player, args.mapFile);
-    CoreTimer timer;
+    CoreTimer time;
     Timer frameTimer;
 
     running = true;
     while (running) {
         processEvents(input);
 
-        timer.step();
+        time.step();
         frameTimer.start();
-        update(timer.getDelta(), input, player, map);
+        update(time.getDelta(), input, player, map);
 
         draw(graphics, map);
         float frameTime = frameTimer.end();
 
-        frameTimer.print(1000, "frametime ms: %f", frameTime);
+        printStats(graphics, time.getFPS(), frameTime);
+        graphics.present();
 
-        timer.sleep(1);
+        time.sleep(1);
     }
 
     SDL_Quit();

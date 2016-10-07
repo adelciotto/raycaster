@@ -1,6 +1,7 @@
 #ifndef TIMER_H
 #define TIMER_H
 
+#include <functional>
 #include "common.h"
 
 class Timer {
@@ -9,7 +10,7 @@ class Timer {
     uint64_t freq;
     float delta;
     
-    uint32_t previousPrintTime;
+    uint32_t previousIntervalTime;
 
 public:
     Timer() 
@@ -33,14 +34,13 @@ public:
         return delta;
     }
 
-    template<typename... Args>
-    void print(int interval, const std::string& format, Args... args) {
+    void setInterval(uint32_t interval, const std::function<void()>&& fn) {
         uint32_t now = SDL_GetTicks();
-        uint32_t printDelta = now - previousPrintTime;
+        uint32_t intervalDelta = now - previousIntervalTime;
 
-        if (printDelta > interval) {
-            utils::printfflush(format.c_str(), args ...);
-            previousPrintTime = now;
+        if (intervalDelta > interval) {
+            fn();
+            previousIntervalTime = now;
         }
     }
 };

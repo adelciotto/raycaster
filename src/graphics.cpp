@@ -51,7 +51,7 @@ Graphics::Graphics(const Window& win, bool vsync)
     if (screen.get() == nullptr) handleError("SDLSurface");
     logger::info("SDL Surface created\n");
 
-    generateFont();
+    generateBitmapFont();
 }
 
 void Graphics::clear(uint32_t color) {
@@ -136,25 +136,22 @@ void Graphics::drawRect(int x, int y, int width, int height, uint32_t color) {
     const SDL_Rect rect{x, y, width, height};
 
     SDL_FillRect(screen.get(), &rect, color);
-
-    //int x2 = x + width;
-    //int y2 = y + height;
-    //if (width > height) {
-        //for (int i = y; i <= y2; i++) {
-            //drawHorizLine(i, x, x2, color); 
-        //}
-    //} else {
-        //for (int i = x; i <= x2; i++) {
-            //drawVertLine(i, y, y2, color);
-        //}
-    //}
 }
 
-void Graphics::drawString(const std::string& text, int x, int y, uint32_t color) {
-    for (size_t i = 0; i < text.size(); i++) {
-        drawLetter(text[i], x, y, color);
-        x += 8;
+int Graphics::drawString(const std::string& text, int x, int y, uint32_t color) {
+    return drawString(text, x, y, color, false, 0x00000000);
+}
+
+int Graphics::drawString(const std::string& text, int x, int y, uint32_t color, bool useBg,
+                         uint32_t bgColor) {
+    for (int i = 0; i < text.size(); i++) {
+        drawLetter(text[i], x, y, color, useBg, bgColor);
+        x += CharSize;
+
+        if (x > bufferWidth) y += LineHeight;
     }
+
+    return y += LineHeight;
 }
 
 void Graphics::setPixel(int x, int y, uint32_t color) {
@@ -167,14 +164,15 @@ void Graphics::setPixel(int x, int y, uint32_t color) {
     *bufp = color;
 }
 
-void Graphics::generateFont() {
+void Graphics::generateBitmapFont() {
     int w, h, bpp;
     uint8_t *data = stbi_load("assets/textures/bitmapfont.png", &w, &h, &bpp, 0);
+    int numCells = w / CharSize;
 
-    for (int c = 0; c < 256; c++) {
-        for (int y = 0; y < 8; y++) {
-            for (int x = 0; x < 8; x++) {
-                int i = w * (8 * (c / 16) + y) + (8 * (c % 16) + x);
+    for (int c = 0; c < NumChars; c++) {
+        for (int y = 0; y < CharSize; y++) {
+            for (int x = 0; x < CharSize; x++) {
+                int i = bpp * w * (CharSize * (c / numCells) + y) + bpp * (CharSize * (c % numCells) + x);
                 bitmapFont[c][x][y] = data[i] == 0xFF;
             }
         }
@@ -183,11 +181,13 @@ void Graphics::generateFont() {
     stbi_image_free(data);
 }
 
-void Graphics::drawLetter(unsigned char n, int x, int y, uint32_t color) {
-    for (int v = 0; v < 8; v++) {
-        for (int u = 0; u < 8; u++) {
+void Graphics::drawLetter(unsigned char n, int x, int y, uint32_t color, bool useBg, uint32_t bgColor) {
+    for (int v = 0; v < CharSize; v++) {
+        for (int u = 0; u < CharSize; u++) {
             if (bitmapFont[n][u][v]) {
                 setPixel(x + u, y + v, color);
+            } else if (useBg) {
+                setPixel(x + u, y + v, bgColor);
             }
         }
     }
