@@ -64,7 +64,7 @@ void CoreTimer::resume() {
 }
 
 void CoreTimer::step() {
-    frames++;
+    if (!paused) frames++;
 
     // Calculate the delta-time (in seconds) between now and the last call to Timer.step.
     uint32_t currentTime = elapsed();

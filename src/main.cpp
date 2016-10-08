@@ -124,20 +124,25 @@ int main(int argc, char **argv) {
         time.start();
 
         processEvents(input, time);
+
+        // Right now this is a simple game loop that uses a variable time-step.
+        // It's used to maintain consistent game speeds across varying framerates.
+        // It is not the best solution, but for now lets keep it simple.
+        // VSync is on by default to keep the framerate locked to the vertical refresh rate
+        // of the users monitor. When vsync is not available, CoreTimer::delay can be used to
+        // manually cap it.
         time.step();
         float delta = time.getDelta();
 
         if (!time.isPaused()) {
             frameTimer.start();
             update(delta, input, player, map);
-
             draw(graphics, map);
             frameTimer.end();
 
             printStats(graphics, player, time.getFPS(), frameTimer);
+            graphics.present();
         }
-
-        graphics.present();
 
         time.sleep(1);
         // time.delay(); Use to manually cap the framerate to 60fps.
