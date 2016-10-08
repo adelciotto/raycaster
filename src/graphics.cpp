@@ -15,12 +15,23 @@ static void destroySDLRenderer(SDL_Renderer *rend);
 static void destroySDLTexture(SDL_Texture *tex);
 static void destroySDLSurface(SDL_Surface *surface);
 
+Graphics::Graphics()
+    : bufferWidth(defaultBufferWidth),
+      bufferHeight(defaultBufferHeight),
+      sdlRenderer(nullptr, SDL_DestroyRenderer),
+      sdlTexture(nullptr, SDL_DestroyTexture),
+      screen(nullptr, SDL_FreeSurface) { }
+
 Graphics::Graphics(const Window& win, bool vsync)
     : bufferWidth(defaultBufferWidth),
       bufferHeight(defaultBufferHeight),
       sdlRenderer(nullptr, SDL_DestroyRenderer),
       sdlTexture(nullptr, SDL_DestroyTexture),
       screen(nullptr, SDL_FreeSurface) {
+    create(win, vsync);
+}
+
+void Graphics::create(const Window& win, bool vsync) {
     auto handleError = [](const std::string& resource) -> void {
         throw std::runtime_error(
             utils::stringFormat("Could not create %s: %s\n", resource.c_str(), SDL_GetError())

@@ -19,8 +19,10 @@ class Map {
     int side;
 
 public:
+    Map();
     Map(Player *player, const std::string& file);
 
+    void create(Player *player, const std::string& file);
     void update(float dt);
     void draw(Graphics& graphics);
 

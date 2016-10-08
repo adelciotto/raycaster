@@ -18,6 +18,7 @@ struct Player {
     mathutils::Vec2 velocity;
     float rotation;
 
+    Player();
     Player(float startX, float startY, float fov);
 
     void move(Direction direction);

@@ -38,10 +38,19 @@ static const int defaultWorldMap[defaultMapWidth * defaultMapHeight] = {
 };
 static const int collisionOffset = 4;
 
-Map::Map(Player *player, const std::string& file) 
-    : player(player),
+Map::Map()
+    : player(nullptr),
       mapX(0),
-      mapY(0) {
+      mapY(0) { }
+
+Map::Map(Player *player, const std::string& file) {
+    create(player, file);
+}
+
+void Map::create(Player *p, const std::string& file) {
+    player = p;
+    mapX = mapY = 0;
+
     loadTextures();
     loadFile(file);
 }

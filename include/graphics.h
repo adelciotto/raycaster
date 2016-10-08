@@ -22,10 +22,12 @@ class Graphics {
     bool bitmapFont[NumChars][CharSize][CharSize];
 
 public:
+    Graphics();
     Graphics(const Window& win, bool vsync);
 
     int width() const { return bufferWidth; }
     int height() const { return bufferHeight; }
+    void create(const Window& win, bool vsync);
     void clear(uint32_t color);
     void present();
     void drawVertLine(int x, int y1, int y2, uint32_t color);

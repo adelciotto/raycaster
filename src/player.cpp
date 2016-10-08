@@ -1,8 +1,22 @@
 #include "player.h"
 #include "mathutils/mathutils.h"
 
-const float moveSpeed = 3.0f;
-const float rotationSpeed = 2.0f;
+static const float defaultStartX = 22.0f;
+static const float defaultStartY = 11.5f;
+static const float defaultFov = 66.0f;
+static const float moveSpeed = 3.0f;
+static const float rotationSpeed = 2.0f;
+
+Player::Player()
+    : position(defaultStartX, defaultStartY),
+      direction(-1.0f, 0.0f),
+      velocity(),
+      rotation(0.0f) {
+    float fovRadians = mathutils::toRadians(defaultFov);
+    float focalLength = tan(fovRadians / 2.0f);
+
+    cameraPlane.set(0, focalLength);
+}
 
 Player::Player(float startX, float startY, float fov) 
     : position(startX, startY),

@@ -4,15 +4,27 @@
 static SDL_Window *createSDLWindow(int width, int height, bool fullscreen);
 static void destroySDLWindow(SDL_Window *win);
 
+Window::Window()
+    : width(640),
+      height(480),
+      sdlWindow(nullptr, destroySDLWindow) { }
+
 Window::Window(int width, int height, bool fullscreen)
-    : width(width),
-      height(height),
-    sdlWindow(createSDLWindow(width, height, fullscreen), destroySDLWindow) {
+    : sdlWindow(nullptr, destroySDLWindow) {
+    create(width, height, fullscreen);
+}
+
+void Window::create(int w, int h, bool fullscreen) {
+    sdlWindow = SDLWindowPtr(createSDLWindow(w, h, fullscreen), destroySDLWindow);
+
     if (sdlWindow.get() == nullptr) {
         throw std::runtime_error(
             utils::stringFormat("Could not create SDLWindow: %s\n", SDL_GetError())
         );
     }
+
+    width = w;
+    height = h;
     logger::info("Window created\n");
 }
 
