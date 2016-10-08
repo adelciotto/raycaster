@@ -1,5 +1,5 @@
 #include "coretimer.h"
-#include "timer.h"
+#include "profile_timer.h"
 #include "window.h"
 #include "graphics.h"
 #include "input.h"
@@ -88,14 +88,13 @@ static void draw(Graphics& graphics, Map& map) {
     map.draw(graphics);
 }
 
-static void printStats(Graphics& graphics, Player& player, float fps, float frameTime) {
+static void printStats(Graphics& graphics, Player& player, float fps, ProfileTimer& frameTimer) {
     // Print the FPS.
     std::string text = utils::stringFormat("fps: %.2f", fps);
     int nextY = graphics.drawString(text, 10, 10, 0xFFFFFFFF, true, 0xFF00FFFF);
 
     // Print the frametime.
-    text = utils::stringFormat("frametime: %.2f", frameTime);
-    nextY = graphics.drawString(text, 10, nextY, 0xFFFFFFFF, true, 0xFF00FFFF);
+    nextY = frameTimer.printDelta(graphics, 10, nextY, 0xFFFFFFFF, 0xFF00FFFF);
 
     // Print the player position.
     text = utils::stringFormat("position: %s", player.position.toString().c_str());
@@ -118,13 +117,14 @@ int main(int argc, char **argv) {
     Player player(22, 11.5, 66.0f);
     Map map(&player, args.mapFile);
     CoreTimer time;
-    Timer frameTimer;
+    ProfileTimer frameTimer("frametime");
 
     running = true;
     while (running) {
+        time.start();
+
         processEvents(input, time);
         time.step();
-
         float delta = time.getDelta();
 
         if (!time.isPaused()) {
@@ -132,13 +132,15 @@ int main(int argc, char **argv) {
             update(delta, input, player, map);
 
             draw(graphics, map);
-            float frameTime = frameTimer.end();
+            frameTimer.end();
 
-            printStats(graphics, player, time.getFPS(), frameTime);
+            printStats(graphics, player, time.getFPS(), frameTimer);
         }
 
         graphics.present();
+
         time.sleep(1);
+        // time.delay(); Use to manually cap the framerate to 60fps.
     }
 
     SDL_Quit();

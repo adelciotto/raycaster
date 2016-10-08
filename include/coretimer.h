@@ -4,8 +4,10 @@
 #include "common.h"
 
 class CoreTimer {
+    static bool instantiated;
+
     uint32_t startTime;
-    uint32_t currentTime;
+    uint32_t fpsLimitStartTime;
     uint32_t pausedTime;
     uint32_t previousTime;
     uint32_t previousFpsUpdate;
@@ -18,14 +20,16 @@ class CoreTimer {
 public:
     CoreTimer();
 
-    float ticks() const { return (float)SDL_GetTicks(); }
-    float getFPS() const { return fps; }
-    float getDelta() const { return delta; }
-    float elapsed() const { return float(SDL_GetTicks() - startTime); }
-    bool isPaused() const { return paused; }
+    float ticks() const;
+    float getFPS() const;
+    float getDelta() const;
+    bool isPaused() const;
+    uint32_t elapsed() const;
+    void start();
     void pause();
     void resume();
     void step();
+    void delay();
     void sleep(uint32_t ms);
 };
 

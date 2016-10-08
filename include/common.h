@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <memory>
+#include <assert.h>
 #include <SDL2/SDL.h>
 #include "utils.h"
 #include "logger.h"

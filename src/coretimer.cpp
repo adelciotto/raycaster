@@ -1,35 +1,50 @@
 #include "coretimer.h"
 
-const float fpsUpdateFreq = 1.0f;
+static const float fpsUpdateFreq = 1.0f;
+static const float fps = 60.0f;
+static const float timePerFrame = 1000.0f / fps;
+
+bool CoreTimer::instantiated = false;
 
 CoreTimer::CoreTimer() 
     : startTime(SDL_GetTicks()),
-      currentTime(0),
+      fpsLimitStartTime(SDL_GetTicks()),
       previousTime(SDL_GetTicks()),
       previousFpsUpdate(SDL_GetTicks()),
       fps(0.0f),
       frames(0),
       delta(0.0f),
-      paused(false) { }
+      paused(false) { 
+    assert(!instantiated);
+    instantiated = true;
+}
 
-void CoreTimer::step() {
-    frames++;
+float CoreTimer::ticks() const {
+    return float(SDL_GetTicks());
+}
 
-    // Calculate the delta-time (in seconds) between now and the last call to Timer.step.
-    previousTime = currentTime;
-    currentTime = SDL_GetTicks();
-    delta = paused
-          ? float(pausedTime) / 1000.0f
-          : float(currentTime - previousTime) / 1000.0f;
+float CoreTimer::getFPS() const {
+    return fps;
+}
 
-    float lastFpsUpdateTime = float(currentTime - previousFpsUpdate) / 1000.0f;
+float CoreTimer::getDelta() const {
+    return delta / 1000.0f;
+}
 
-    // Update the FPS once every second to avoid a jittery counter.
-    if (lastFpsUpdateTime > fpsUpdateFreq) {
-        fps = float(frames / fpsUpdateFreq);
-        previousFpsUpdate = currentTime;
-        frames = 0;
+bool CoreTimer::isPaused() const {
+    return paused;
+}
+
+uint32_t CoreTimer::elapsed() const {
+    if (paused) {
+        return pausedTime;
+    } else {
+        return SDL_GetTicks() - startTime;
     }
+}
+
+void CoreTimer::start() {
+    fpsLimitStartTime = SDL_GetTicks();
 }
 
 void CoreTimer::pause() {
@@ -45,6 +60,32 @@ void CoreTimer::resume() {
         paused = false;
         startTime = SDL_GetTicks() - pausedTime;
         pausedTime = 0;
+    }
+}
+
+void CoreTimer::step() {
+    frames++;
+
+    // Calculate the delta-time (in seconds) between now and the last call to Timer.step.
+    uint32_t currentTime = elapsed();
+    delta = float(currentTime - previousTime);
+    previousTime = currentTime;
+
+    float lastFpsUpdateTime = float(currentTime - previousFpsUpdate) / 1000.0f;
+
+    // Update the FPS once every second to avoid a jittery counter.
+    if (lastFpsUpdateTime > fpsUpdateFreq) {
+        fps = float(frames / fpsUpdateFreq);
+        previousFpsUpdate = currentTime;
+        frames = 0;
+    }
+}
+
+void CoreTimer::delay() {
+    uint32_t totalFrameTime = SDL_GetTicks() - fpsLimitStartTime;
+
+    if (totalFrameTime < timePerFrame) {
+        SDL_Delay(uint32_t(timePerFrame - totalFrameTime));
     }
 }
 
