@@ -10,17 +10,6 @@ typedef std::unique_ptr<SDL_Texture, void(*)(SDL_Texture *)> SDLTexturePtr;
 typedef std::unique_ptr<SDL_Surface, void(*)(SDL_Surface *)> SDLSurfacePtr;
 
 class Graphics {
-    static const int NumChars = 256;
-    static const int CharSize = 8;
-    static const int LineHeight = CharSize * 1.5;
-
-    int bufferWidth;
-    int bufferHeight;
-    SDLRendererPtr sdlRenderer;
-    SDLTexturePtr sdlTexture;
-    SDLSurfacePtr screen;
-    bool bitmapFont[NumChars][CharSize][CharSize];
-
 public:
     Graphics();
     Graphics(const Window& win, bool vsync);
@@ -40,6 +29,17 @@ public:
     void setPixel(int x, int y, uint32_t color);
 
 private:
+    static const int NumChars = 256;
+    static const int CharSize = 8;
+    static const int LineHeight = CharSize * 1.5;
+
+    int bufferWidth;
+    int bufferHeight;
+    SDLRendererPtr sdlRenderer;
+    SDLTexturePtr sdlTexture;
+    SDLSurfacePtr screen;
+    bool bitmapFont[NumChars][CharSize][CharSize];
+
     void generateBitmapFont();
     void drawLetter(unsigned char n, int x, int y, uint32_t color, bool useBg, uint32_t bgColor);
 };

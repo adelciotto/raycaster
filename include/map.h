@@ -9,15 +9,6 @@ struct Player;
 class Graphics;
 
 class Map {
-    Player *player;
-    Texture textures[8];
-    std::vector<uint8_t> worldMap;
-    uint32_t mapWidth, mapHeight;
-    mathutils::Vec2 rayPos;
-    mathutils::Vec2 rayDir;
-    int mapX, mapY;
-    int side;
-
 public:
     Map();
     Map(Player *player, const std::string& file);
@@ -27,6 +18,15 @@ public:
     void draw(Graphics& graphics);
 
 private:
+    Player *player;
+    Texture textures[8];
+    std::vector<uint8_t> worldMap;
+    uint32_t mapWidth, mapHeight;
+    mathutils::Vec2 rayPos;
+    mathutils::Vec2 rayDir;
+    int mapX, mapY;
+    int side;
+
     void loadTextures();
     void loadFile(const std::string& file);
     float castRay(float cameraX);

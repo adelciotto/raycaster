@@ -12,10 +12,6 @@ enum WindowModes {
 typedef std::unique_ptr<SDL_Window, void(*)(SDL_Window *)> SDLWindowPtr;
 
 class Window {
-    int width;
-    int height;
-    SDLWindowPtr sdlWindow;
-
 public:
     Window();
     Window(int width, int height, bool fullscreen);
@@ -24,6 +20,11 @@ public:
     void create(int w, int h, bool fullscreen);
     void setSize(int width, int height);
     void setMode(WindowModes mode);
+
+private:
+    int width;
+    int height;
+    SDLWindowPtr sdlWindow;
 };
 
 #endif // WINDOW_H

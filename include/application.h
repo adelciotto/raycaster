@@ -16,7 +16,7 @@ namespace {
         int width;
         int height;
         std::string mapFile;
-        bool novsync;
+        bool vsync;
     };
 };
 
@@ -24,6 +24,10 @@ namespace {
 // the creation / deletion of all the main required resources for
 // this program. It also contains the game loop.
 class Application {
+public:
+    Application(int argc, char **argv);
+
+private:
     static bool instantiated;
 
     Window window; 
@@ -34,11 +38,7 @@ class Application {
     CoreTimer time;
     bool running;
 
-public:
-    Application(int argc, char **argv);
-
-private:
-    Settings parseSettings(const InputParser& inputParser);
+    Settings parseSettings();
     void create(const Settings& settings);
     void processEvents();
     void update(float dt);

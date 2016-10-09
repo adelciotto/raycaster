@@ -23,7 +23,7 @@ namespace logger {
 
     template<typename... Args>
     inline void error(const std::string& format, Args... args) {
-        SDL_LogError(format.c_str(), args...);
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, format.c_str(), args...);
     }
 }
 

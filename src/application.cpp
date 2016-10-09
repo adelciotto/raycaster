@@ -1,6 +1,8 @@
+#include <fstream>
 #include "application.h"
-#include "input_parser.h"
+#include "json_parser.h"
 #include "profile_timer.h"
+#include "picojson.h"
 
 bool Application::instantiated = false;
 
@@ -9,34 +11,35 @@ Application::Application(int argc, char **argv)
     assert(!instantiated);
     instantiated = true;
 
-    InputParser inputParser(argc, argv);
-    const Settings settings = parseSettings(inputParser); 
+    const Settings settings = parseSettings(); 
 
     create(settings);
     loop();
 }
 
-Settings Application::parseSettings(const InputParser& inputParser) {
-    const int width = std::stoi(inputParser.getOption("-width", "1280"));
-    const int height = std::stoi(inputParser.getOption("-height", "720"));
-    const std::string mapFile = inputParser.getOption("-map", "assets/maps/small.txt");
-    const bool fullscreen = inputParser.optionExists("-fullscreen");
-    const bool novsync = inputParser.optionExists("-novsync");
+Settings Application::parseSettings() {
+    JsonParser jsonParser("settings.json");
+
+    const int width = (int)jsonParser.get<double>("width");
+    const int height = (int)jsonParser.get<double>("height");
+    const std::string mapFile = jsonParser.get<std::string>("map");
+    const bool fullscreen = jsonParser.get<bool>("fullscreen");
+    const bool vsync = jsonParser.get<bool>("vsync");
     
     logger::info("Using w: %d, h: %d, fullscreen: %d, vsync: %d\n", 
                  width, 
                  height,
                  fullscreen,
-                 !novsync
+                 vsync
     );
-    return Settings{fullscreen, width, height, mapFile, novsync};
+    return Settings{fullscreen, width, height, mapFile, vsync};
 }
 
 void Application::create(const Settings& settings) {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
 
     window.create(settings.width, settings.height, settings.fullscreen);
-    graphics.create(window, !settings.novsync);
+    graphics.create(window, settings.vsync);
     map.create(&player, settings.mapFile);
     running = true;
 }

@@ -12,9 +12,6 @@ enum KeyCodes {
 };
 
 class Input {
-    const uint8_t *keyStates;
-    std::unique_ptr<uint8_t[]> previousKeyStates;
-
 public:
     Input();
 
@@ -23,6 +20,10 @@ public:
     bool isKeyPressed(KeyCodes key) const;
     void pollEvent(SDL_Event *e);
     void update();
+
+private:
+    const uint8_t *keyStates;
+    std::unique_ptr<uint8_t[]> previousKeyStates;
 };
 
 #endif // INPUT_H
