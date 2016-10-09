@@ -20,11 +20,11 @@ Application::Application(int argc, char **argv)
 Settings Application::parseSettings() {
     JsonParser jsonParser("settings.json");
 
-    const int width = (int)jsonParser.get<double>("width");
-    const int height = (int)jsonParser.get<double>("height");
-    const std::string mapFile = jsonParser.get<std::string>("map");
-    const bool fullscreen = jsonParser.get<bool>("fullscreen");
-    const bool vsync = jsonParser.get<bool>("vsync");
+    const int width = (int)jsonParser.get<double>("width", 640);
+    const int height = (int)jsonParser.get<double>("height", 360);
+    const std::string mapFile = jsonParser.get<std::string>("map", "assets/maps/small.json");
+    const bool fullscreen = jsonParser.get<bool>("fullscreen", false);
+    const bool vsync = jsonParser.get<bool>("vsync", true);
     
     logger::info("Using w: %d, h: %d, fullscreen: %d, vsync: %d\n", 
                  width, 

@@ -2,6 +2,6 @@
   "width": 1280,
   "height": 720,
   "fullscreen": false,
-  "map": "assets/maps/small.txt",
+  "map": "assets/maps/test.json",
   "vsync": true
 }

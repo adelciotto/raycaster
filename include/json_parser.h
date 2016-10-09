@@ -36,14 +36,14 @@ public:
     }
 
     template<typename T>
-    const T& get(const std::string& name) const {
+    const T get(const std::string& name, const T& defaultValue) const {
         auto it = rootObject.find(name);
         auto value = it->second;
 
         if (value.is<T>() && it != rootObject.end()) {
             return value.get<T>();
         } else {
-            return T();
+            return defaultValue;
         }
     }
 

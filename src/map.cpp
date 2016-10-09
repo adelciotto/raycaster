@@ -7,6 +7,7 @@
 #include "graphics.h"
 #include "color.h"
 #include "texture.h"
+#include "json_parser.h"
 
 static const int defaultMapWidth = 24;
 static const int defaultMapHeight = 24;
@@ -67,8 +68,13 @@ void Map::loadTextures() {
 }
 
 void Map::loadFile(const std::string& file) {
-    std::ifstream infile;
-    std::string line;
+    JsonParser jsonParser(file);
+
+    const float startX = jsonParser.get<double>("startX", player->position.x);
+    const float startY = jsonParser.get<double>("startY", player->position.y);
+    const int width = (int)jsonParser.get<double>("width", defaultMapWidth);
+    const int height = (int)jsonParser.get<double>("height", defaultMapHeight);
+    const auto data = jsonParser.get<picojson::array>("data", picojson::array());
     auto loadDefaultMap = [&]() -> void {
         logger::warn("%s could not be loaded, using default map\n", file.c_str());
         mapWidth = 24;
@@ -76,55 +82,25 @@ void Map::loadFile(const std::string& file) {
         worldMap = std::vector<uint8_t>(std::begin(defaultWorldMap), std::end(defaultWorldMap));
     };
 
-    infile.open(file);
-    if (infile.fail()) {
-        loadDefaultMap();
-        return;
-    }
-
-    auto getProperty = [&](const std::string& prop, uint32_t& out) -> void {
-        std::getline(infile, line);
-        auto tokens = utils::stringSplit(line, '=');
-
-        if (tokens.size() == 2 && tokens[0].compare(prop)) {
-            out = std::stoi(tokens[1]);
+    worldMap.reserve(width*height);
+    for (const auto& v : data) {
+        if (v.is<double>()) {
+            worldMap.push_back((uint8_t)v.get<double>());
         } else {
-            loadDefaultMap();
-            return;
-        }
-    };
-
-    // Get the map dimensions.
-    uint32_t startX, startY;
-    getProperty("width", mapWidth);
-    getProperty("height", mapHeight);
-    getProperty("startingX", startX);
-    getProperty("startignY", startY);
-
-    worldMap.reserve(mapWidth*mapHeight);
-    player->position.set(startX, startY);
-
-    // Get the map data.
-    while (std::getline(infile, line)) {
-        auto mapData = utils::stringSplit(line, ',');
-
-        if (mapData.size() == mapWidth) {
-            for (const auto& i : mapData) {
-                worldMap.push_back(std::stoi(i));
-            } 
-        } else {
-            logger::warn("invalid map data for %s\n", file.c_str());
             loadDefaultMap();
             return;
         }
     }
 
-    if (worldMap.size() != mapWidth*mapHeight) {
+    if (worldMap.size() !=  size_t(width*height)) {
         logger::warn("invalid map data for %s\n", file.c_str());
         loadDefaultMap();
         return;
     }
 
+    mapWidth = width;
+    mapHeight = height;
+    player->position.set(startX, startY);
     logger::info("Map %s loaded with w: %d, h: %d\n", file.c_str(), mapWidth, mapHeight);
 }
 
