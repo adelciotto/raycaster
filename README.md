@@ -36,23 +36,27 @@ Then run the `rayc` executable.
 ./rayc
 ```
 
-## Command-line arguments
+## Configuration
 
-```
--width <uint>  // The window width, defaults to 640.
--height <uint> // The window height, defaults to 360.
--fullscreen    // Whether or not to run in fullscreen mode. Defaults to off.
--novsync       // Disable vsync. VSync is enabled by default.
--map <string>  // The map file to load. Defaults to assets/maps/small.txt.
+The programs settings and map data are stored in JSON format. You can change the
+settings by editing `settings.json` located at the root of the repository.
+These are the defaults.
 
-// example
-./rayc -width 1280 -height 720 -fullscreen -map assets/maps/somemap.txt
+```js
+{
+  "width": 640,
+  "height": 360,
+  "fullscreen": false,
+  "map": "assets/maps/small.json",
+  "vsync": true
+}
 ```
 
 ## Third-party code
 
 - [SDL2](https://www.libsdl.org/download-2.0.php)
 - [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h)
+- [picojson](https://github.com/kazuho/picojson)
 - [Generic Makefile](https://github.com/mbcrawfo/GenericMakefile) by [mbcrawfo](https://github.com/mbcrawfo)
 
 ## Resources
