@@ -14,7 +14,7 @@ public:
     Map(Player *player, const std::string& file);
 
     void create(Player *player, const std::string& file);
-    void update(float dt);
+    void update(double dt);
     void draw(Graphics& graphics);
 
 private:
@@ -29,11 +29,11 @@ private:
 
     void loadTextures();
     void loadFile(const std::string& file);
-    float castRay(float cameraX);
-    void resolveCollisions(float dt);
-    void drawWall(Graphics& graphics, int x, float distance);
+    double castRay(double cameraX);
+    void resolveCollisions(double dt);
+    void drawWall(Graphics& graphics, int x, double distance);
     void drawFlatColoredWall(Graphics& graphics, int x, int drawStart, int drawEnd);
-    void drawTexturedWall(Graphics& graphics, int x, float distance, int lineHeight, int drawStart, int drawEnd);
+    void drawTexturedWall(Graphics& graphics, int x, double distance, int lineHeight, int drawStart, int drawEnd);
 };
 
 #endif // MAP_H

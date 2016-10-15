@@ -6,30 +6,41 @@
 #include "picojson.h"
 #include "utils.h"
 
+
 class JsonParser {
+class JsonException: public std::exception {
+public:
+    explicit JsonException(const std::string& message, const std::string& filename) 
+        : msg(utils::stringFormat("%s: %s", filename.c_str(), message.c_str())),
+          filename(filename) { }
+    virtual ~JsonException() throw() { }
+    
+    virtual const char *what() const throw() {
+        return msg.c_str();
+    }
+
+private:
+    std::string msg;
+    std::string filename;
+};
+
 public:
     JsonParser(const std::string& filename) {
         std::ifstream infile;
 
         infile.open(filename);
         if (infile.fail()) {
-            throw std::runtime_error(
-                utils::stringFormat("Could not open %s\n", filename.c_str())
-            );
+            throw JsonException("Could not open file", filename);
         }
 
         infile >> jsonVal;
         std::string err = picojson::get_last_error();
         if (!err.empty()) {
-            throw std::runtime_error(
-                utils::stringFormat("Could not parse %s\n", filename.c_str())
-            );
+            throw JsonException("Could not parse file", filename);
         }
 
         if (!jsonVal.is<picojson::object>()) {
-            throw std::runtime_error(
-                utils::stringFormat("Root must be an object: %s\n", filename.c_str())
-            );
+            throw JsonException("Root must be an object", filename);
         }
 
         rootObject = jsonVal.get<picojson::object>();

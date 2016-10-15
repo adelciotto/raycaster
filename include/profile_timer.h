@@ -9,8 +9,8 @@ class ProfileTimer {
 public:
     ProfileTimer(const std::string& name);
 
-    float start();
-    float end();
+    double start();
+    double end();
     int printDelta(Graphics& graphics, int x, int y, uint32_t color, uint32_t bgColor);
 
 private:
@@ -18,7 +18,7 @@ private:
     uint64_t prev;
     uint64_t now;
     uint64_t freq;
-    float delta;
+    double delta;
 
 };
 

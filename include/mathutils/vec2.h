@@ -6,14 +6,14 @@
 
 namespace mathutils {
     struct Vec2 {
-        float x;
-        float y;
+        double x;
+        double y;
 
         Vec2() : x(0), y(0) { }
-        Vec2(float x, float y) : x(x), y(y) { }
+        Vec2(double x, double y) : x(x), y(y) { }
         Vec2(const Vec2& v) : x(v.x), y(v.y) { }
 
-        inline const Vec2 operator+ (float s) const {
+        inline const Vec2 operator+ (double s) const {
             return Vec2(x + s, y + s);
         }
 
@@ -21,7 +21,7 @@ namespace mathutils {
             return Vec2(x + v.x, y + v.y);
         }
 
-        inline const Vec2 operator- (float s) const {
+        inline const Vec2 operator- (double s) const {
             return Vec2(x - s, y - s);
         }
 
@@ -29,7 +29,7 @@ namespace mathutils {
             return Vec2(x - v.x, y - v.y);
         }
 
-        inline const Vec2 operator* (float s) const {
+        inline const Vec2 operator* (double s) const {
             return Vec2(x * s, y * s);
         }
 
@@ -44,11 +44,11 @@ namespace mathutils {
             return *this;
         }
 
-        void set(float s);
-        void set(float x, float y);
+        void set(double s);
+        void set(double x, double y);
         void set(const Vec2& v);
-        float length();
-        void rotate(float radians);
+        double length();
+        void rotate(double radians);
         std::string toString();
 
         friend std::ostream& operator<< (std::ostream& out, const Vec2& v);

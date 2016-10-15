@@ -67,7 +67,7 @@ void Application::processEvents() {
     }
 }
 
-void Application::update(float dt) {
+void Application::update(double dt) {
     if (input.isKeyPressed(KeyCodes::keyEsc)) {
         running = false;
     }
@@ -98,7 +98,7 @@ void Application::draw() {
 
 void Application::loop() {
     ProfileTimer frameTimer("frametime");
-    auto printStats = [&](float fps) -> void {
+    auto printStats = [&](double fps) -> void {
         // Print the FPS.
         std::string text = utils::stringFormat("fps: %.2f", fps);
         int nextY = graphics.drawString(text, 10, 10, 0xFFFFFFFF, true, 0xFF00FFFF);
@@ -127,7 +127,7 @@ void Application::loop() {
         // of the users monitor. When vsync is not available, CoreTimer::delay can be used to
         // manually cap it.
         time.step();
-        float delta = time.getDelta();
+        double delta = time.getDelta();
 
         if (!time.isPaused()) {
             frameTimer.start();

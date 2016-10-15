@@ -41,7 +41,7 @@ private:
     Settings parseSettings();
     void create(const Settings& settings);
     void processEvents();
-    void update(float dt);
+    void update(double dt);
     void draw();
     void loop();
 };

@@ -70,8 +70,8 @@ void Map::loadTextures() {
 void Map::loadFile(const std::string& file) {
     JsonParser jsonParser(file);
 
-    const float startX = jsonParser.get<double>("startX", player->position.x);
-    const float startY = jsonParser.get<double>("startY", player->position.y);
+    const double startX = jsonParser.get<double>("startX", player->position.x);
+    const double startY = jsonParser.get<double>("startY", player->position.y);
     const int width = (int)jsonParser.get<double>("width", defaultMapWidth);
     const int height = (int)jsonParser.get<double>("height", defaultMapHeight);
     const auto data = jsonParser.get<picojson::array>("data", picojson::array());
@@ -104,12 +104,12 @@ void Map::loadFile(const std::string& file) {
     logger::info("Map %s loaded with w: %d, h: %d\n", file.c_str(), mapWidth, mapHeight);
 }
 
-void Map::update(float delta) {
+void Map::update(double delta) {
     resolveCollisions(delta);
     player->update(delta);
 }
 
-void Map::resolveCollisions(float delta) {
+void Map::resolveCollisions(double delta) {
     const auto vel = player->velocity;
     const auto pos = player->position;
     const auto dir = player->direction;
@@ -144,24 +144,24 @@ void Map::draw(Graphics& graphics) {
 
     // For each vertical column in the screen buffer.
     for (int x = 0; x < w; x++) {
-        float cameraX = 2 * x / (float)w - 1;
-        float distance = castRay(cameraX);
+        double cameraX = 2 * x / (double)w - 1;
+        double distance = castRay(cameraX);
 
         drawWall(graphics, x, distance);
     } 
 }
 
-float Map::castRay(float cameraX) {
+double Map::castRay(double cameraX) {
     rayPos.set(player->position);
     rayDir.set(player->direction + player->cameraPlane * cameraX);
 
     mapX = (int)rayPos.x;
     mapY = (int)rayPos.y;
 
-    float deltaDistX = sqrt(1 + (rayDir.y*rayDir.y) / (rayDir.x*rayDir.x));
-    float deltaDistY = sqrt(1 + (rayDir.x*rayDir.x) / (rayDir.y*rayDir.y));
+    double deltaDistX = sqrt(1 + (rayDir.y*rayDir.y) / (rayDir.x*rayDir.x));
+    double deltaDistY = sqrt(1 + (rayDir.x*rayDir.x) / (rayDir.y*rayDir.y));
     
-    float sideDistX, sideDistY;
+    double sideDistX, sideDistY;
     int stepX, stepY;
 
     if (rayDir.x < 0) {
@@ -169,14 +169,14 @@ float Map::castRay(float cameraX) {
         sideDistX = (rayPos.x - mapX) * deltaDistX;
     } else {
         stepX = 1;
-        sideDistX = (mapX + 1.0f - rayPos.x) * deltaDistX;
+        sideDistX = (mapX + 1.0 - rayPos.x) * deltaDistX;
     }
     if (rayDir.y < 0) {
         stepY = -1;
         sideDistY = (rayPos.y - mapY) * deltaDistY;
     } else {
         stepY = 1;
-        sideDistY = (mapY + 1.0f - rayPos.y) * deltaDistY;
+        sideDistY = (mapY + 1.0 - rayPos.y) * deltaDistY;
     }
 
     bool hit = false;
@@ -204,7 +204,7 @@ float Map::castRay(float cameraX) {
     }
 }
 
-void Map::drawWall(Graphics& graphics, int x, float distance) {
+void Map::drawWall(Graphics& graphics, int x, double distance) {
     const int h = graphics.height();
 
     int lineHeight = int(h / distance);
@@ -229,15 +229,15 @@ void Map::drawFlatColoredWall(Graphics& graphics, int x, int drawStart, int draw
     // Uncomment this for a really shit lighting effect.
     //color /= std::max(distance/2, 1.0f);
 
-    if (side == 1) color /= 2.0f;
+    if (side == 1) color /= 2.0;
     graphics.drawVertLine(x, drawStart, drawEnd, color.toHex());
 }
 
 
-void Map::drawTexturedWall(Graphics& graphics, int x, float distance, int lineHeight, int drawStart, int drawEnd) {
+void Map::drawTexturedWall(Graphics& graphics, int x, double distance, int lineHeight, int drawStart, int drawEnd) {
     int texNum = worldMap[mapWidth * mapX + mapY] - 1;
     const Texture& tex = textures[texNum];
-    float wallX;
+    double wallX;
 
     if (side == 0) {
         wallX = rayPos.y + distance * rayDir.y;
@@ -247,7 +247,7 @@ void Map::drawTexturedWall(Graphics& graphics, int x, float distance, int lineHe
 
     wallX -= std::floor(wallX);
 
-    int texX = int(wallX * float(tex.width));
+    int texX = int(wallX * double(tex.width));
 
     if ((side == 0 && rayDir.x > 0) ||
         (side == 1 && rayDir.y > 0)) {

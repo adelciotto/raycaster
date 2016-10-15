@@ -1,14 +1,14 @@
 #include "mathutils/mathutils.h"
 
 namespace mathutils {
-    const float _toRadians = M_PI / 180.0f;
-    const float _toDegrees = 180.0f / M_PI;
+    const double _toRadians = M_PI / 180.0;
+    const double _toDegrees = 180.0 / M_PI;
 
-    float toRadians(float degrees) {
+    double toRadians(double degrees) {
         return degrees * _toRadians;
     }
 
-    float toDegrees(float radians) {
+    double toDegrees(double radians) {
         return radians * _toDegrees;
     }
 }

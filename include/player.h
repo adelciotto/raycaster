@@ -16,14 +16,14 @@ struct Player {
     mathutils::Vec2 direction;
     mathutils::Vec2 cameraPlane;
     mathutils::Vec2 velocity;
-    float rotation;
+    double rotation;
 
     Player();
-    Player(float startX, float startY, float fov);
+    Player(double startX, double startY, double fov);
 
     void move(Direction direction);
     void rotate(Direction direction);
-    void update(float delta);
+    void update(double delta);
     bool isMovingForwards() const;
     bool isMovingBackwards() const;
 };

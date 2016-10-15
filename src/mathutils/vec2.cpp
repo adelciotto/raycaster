@@ -2,12 +2,12 @@
 #include "utils.h"
 
 namespace mathutils {
-    void Vec2::set(float s) { 
+    void Vec2::set(double s) {
         this->x = s;
         this->y = s;
     }
 
-    void Vec2::set(float x, float y) { 
+    void Vec2::set(double x, double y) {
         this->x = x;
         this->y = y;
     }
@@ -17,16 +17,16 @@ namespace mathutils {
         this->y = v.y;
     }
 
-    float Vec2::length() {
-        return (float)sqrt(x*x + y*y);
+    double Vec2::length() {
+        return (double)sqrt(x*x + y*y);
     }
 
-    void Vec2::rotate(float radians) {
-        float cs = (float)cos(radians);
-        float sn = (float)sin(radians);
+    void Vec2::rotate(double radians) {
+        double cs = (double)cos(radians);
+        double sn = (double)sin(radians);
 
-        float px = x * cs - y * sn;
-        float py = x * sn + y * cs;
+        double px = x * cs - y * sn;
+        double py = x * sn + y * cs;
 
         x = px;
         y = py;

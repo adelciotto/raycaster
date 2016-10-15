@@ -7,9 +7,9 @@ class CoreTimer {
 public:
     CoreTimer();
 
-    float ticks() const;
-    float getFPS() const;
-    float getDelta() const;
+    double ticks() const;
+    double getFPS() const;
+    double getDelta() const;
     bool isPaused() const;
     uint32_t elapsed() const;
     void start();
@@ -28,9 +28,9 @@ private:
     uint32_t previousTime;
     uint32_t previousFpsUpdate;
 
-    float fps;
+    double fps;
     int frames;
-    float delta;
+    double delta;
     bool paused;
 };
 

@@ -4,14 +4,14 @@
 #include "common.h"
 
 struct Color {
-    float r, g, b, a;
+    double r, g, b, a;
 
-    Color() : r(0.0f), g(0.0f), b(0.0f), a(1.0f) { }
-    Color(float r, float g, float b) : r(r), g(g), b(b), a(1.0f) { }
-    Color(float r, float g, float b, float a) : r(r), g(g), b(b), a(a) { }
+    Color() : r(0.0), g(0.0), b(0.0), a(1.0) { }
+    Color(double r, double g, double b) : r(r), g(g), b(b), a(1.0) { }
+    Color(double r, double g, double b, double a) : r(r), g(g), b(b), a(a) { }
     Color(uint32_t hex) { set(hex); }
 
-    inline Color& operator*= (float s) {
+    inline Color& operator*= (double s) {
         r *= s;
         g *= s;
         b *= s;
@@ -19,11 +19,11 @@ struct Color {
         return *this;
     }
 
-    inline Color operator/ (float s) {
+    inline Color operator/ (double s) {
         return Color(r / s, g / s, b / s, a);
     }
 
-    inline Color& operator/= (float s) {
+    inline Color& operator/= (double s) {
         r /= s;
         g /= s;
         b /= s;
@@ -32,10 +32,10 @@ struct Color {
     }
 
     inline void set(uint32_t hex) {
-        r = (hex >> 24 & 0xff) / 255.0f;
-        g = (hex >> 16 & 0xff) / 255.0f;
-        b = (hex >> 8 & 0xff) / 255.0f;;
-        a = (hex & 0xff) / 255.0f;;
+        r = (hex >> 24 & 0xff) / 255.0;
+        g = (hex >> 16 & 0xff) / 255.0;
+        b = (hex >> 8 & 0xff) / 255.0;
+        a = (hex & 0xff) / 255.0;
     }
 
     inline uint32_t toHex() const {

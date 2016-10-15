@@ -6,19 +6,19 @@ ProfileTimer::ProfileTimer(const std::string& name)
       prev(SDL_GetPerformanceCounter()),
       now(SDL_GetPerformanceCounter()),
       freq(SDL_GetPerformanceFrequency()),
-      delta(0.0f) { }
+      delta(0.0) { }
 
-float ProfileTimer::start() {
+double ProfileTimer::start() {
     prev = now;
     now = SDL_GetPerformanceCounter();
-    delta = float(now - prev) / float(freq);
+    delta = double(now - prev) / double(freq);
 
     return delta;
 }
 
-float ProfileTimer::end() {
+double ProfileTimer::end() {
     now = SDL_GetPerformanceCounter();
-    delta = float((now - prev)*1000) / float(freq);
+    delta = double((now - prev)*1000) / double(freq);
 
     return delta;
 }
