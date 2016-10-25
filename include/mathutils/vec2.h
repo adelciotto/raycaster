@@ -9,47 +9,24 @@ namespace mathutils {
         double x;
         double y;
 
-        Vec2() : x(0), y(0) { }
-        Vec2(double x, double y) : x(x), y(y) { }
-        Vec2(const Vec2& v) : x(v.x), y(v.y) { }
+        Vec2();
+        Vec2(double x, double y);
 
-        inline const Vec2 operator+ (double s) const {
-            return Vec2(x + s, y + s);
-        }
+        const Vec2 operator+ (double s) const;
+        const Vec2 operator+ (const Vec2& v) const;
+        const Vec2 operator- (double s) const;
+        const Vec2 operator- (const Vec2& v) const;
+        const Vec2 operator* (double s) const;
+        const Vec2 operator* (const Vec2& v) const;
 
-        inline const Vec2 operator+ (const Vec2& v) const {
-            return Vec2(x + v.x, y + v.y);
-        }
-
-        inline const Vec2 operator- (double s) const {
-            return Vec2(x - s, y - s);
-        }
-
-        inline const Vec2 operator- (const Vec2& v) const {
-            return Vec2(x - v.x, y - v.y);
-        }
-
-        inline const Vec2 operator* (double s) const {
-            return Vec2(x * s, y * s);
-        }
-
-        inline const Vec2 operator* (const Vec2& v) const {
-            return Vec2(x * v.x, y * v.y);
-        }
-
-        inline Vec2& operator+= (const Vec2& v) {
-            x += v.x;
-            y += v.y;
-
-            return *this;
-        }
+        Vec2& operator+= (const Vec2& v);
 
         void set(double s);
         void set(double x, double y);
         void set(const Vec2& v);
         double length();
         void rotate(double radians);
-        std::string toString();
+        std::string toString() const;
 
         friend std::ostream& operator<< (std::ostream& out, const Vec2& v);
     };

@@ -1,9 +1,11 @@
 #include "mathutils/mathutils.h"
 
-namespace mathutils {
+namespace {
     const double _toRadians = M_PI / 180.0;
     const double _toDegrees = 180.0 / M_PI;
+}
 
+namespace mathutils {
     double toRadians(double degrees) {
         return degrees * _toRadians;
     }

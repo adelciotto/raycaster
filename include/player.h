@@ -12,20 +12,21 @@ enum Direction {
 };
 
 struct Player {
+    Player();
+    Player(double startX, double startY, double fov);
+
+    void move(Direction direction);
+    void rotate(Direction direction);
+    void update();
+    bool isMovingForwards() const;
+    bool isMovingBackwards() const;
+
     mathutils::Vec2 position;
     mathutils::Vec2 direction;
     mathutils::Vec2 cameraPlane;
     mathutils::Vec2 velocity;
     double rotation;
 
-    Player();
-    Player(double startX, double startY, double fov);
-
-    void move(Direction direction);
-    void rotate(Direction direction);
-    void update(double delta);
-    bool isMovingForwards() const;
-    bool isMovingBackwards() const;
 };
 
 #endif

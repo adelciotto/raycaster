@@ -1,8 +1,10 @@
 #include "coretimer.h"
 
-static const double fpsUpdateFreq = 1.0;
-static const double fps = 60.0;
-static const double timePerFrame = 1000.0 / fps;
+namespace {
+    const double fpsUpdateFreq = 1.0;
+    const double fps = 60.0;
+    const double timePerFrame = 1000.0 / fps;
+}
 
 bool CoreTimer::instantiated = false;
 

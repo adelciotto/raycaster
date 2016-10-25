@@ -1,8 +1,10 @@
 #include <stdexcept>
 #include "window.h"
 
-static SDL_Window *createSDLWindow(int width, int height, bool fullscreen);
-static void destroySDLWindow(SDL_Window *win);
+namespace {
+    SDL_Window *createSDLWindow(int width, int height, bool fullscreen);
+    void destroySDLWindow(SDL_Window *win);
+}
 
 Window::Window()
     : width(640),
@@ -38,21 +40,23 @@ void Window::setMode(WindowModes mode) {
     }
 }
 
-static SDL_Window *createSDLWindow(int width, int height, bool fullscreen) {
-    uint32_t flags = SDL_WINDOW_RESIZABLE;
+namespace {
+    SDL_Window *createSDLWindow(int width, int height, bool fullscreen) {
+        uint32_t flags = SDL_WINDOW_RESIZABLE;
 
-    flags |= fullscreen ? SDL_WINDOW_FULLSCREEN : 0;
-    return SDL_CreateWindow(
-        "raycaster",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
-        width,
-        height,
-        flags
-    );
-}
+        flags |= fullscreen ? SDL_WINDOW_FULLSCREEN : 0;
+        return SDL_CreateWindow(
+                "raycaster",
+                SDL_WINDOWPOS_CENTERED,
+                SDL_WINDOWPOS_CENTERED,
+                width,
+                height,
+                flags
+        );
+    }
 
-static void destroySDLWindow(SDL_Window *win) {
-    SDL_DestroyWindow(win);
-    logger::info("Window destroyed\n");
+    void destroySDLWindow(SDL_Window *win) {
+        SDL_DestroyWindow(win);
+        logger::info("Window destroyed\n");
+    }
 }

@@ -1,11 +1,13 @@
 #include "player.h"
 #include "mathutils/mathutils.h"
 
-static const double defaultStartX = 22.0;
-static const double defaultStartY = 11.5;
-static const double defaultFov = 66.0;
-static const double moveSpeed = 3.0;
-static const double rotationSpeed = 2.0;
+namespace {
+    const double defaultStartX = 22.0;
+    const double defaultStartY = 11.5;
+    const double defaultFov = 66.0;
+    const double moveSpeed = 3.0;
+    const double rotationSpeed = 2.0;
+}
 
 Player::Player()
     : position(defaultStartX, defaultStartY),
@@ -37,10 +39,10 @@ void Player::rotate(Direction direction) {
     rotation = rotationSpeed * direction;
 }
 
-void Player::update(double delta) {
-    direction.rotate(rotation * delta);
-    cameraPlane.rotate(rotation * delta);
-    position += direction * velocity * delta; 
+void Player::update() {
+    direction.rotate(rotation);
+    cameraPlane.rotate(rotation);
+    position += direction * velocity; 
 }
 
 bool Player::isMovingForwards() const {

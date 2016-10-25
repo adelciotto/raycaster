@@ -10,10 +10,10 @@ namespace utils {
     template<typename... Args>
     inline std::string stringFormat(const std::string& format, Args... args) {
         // We have to +1 here for the extra '\0' character.
-        size_t size = snprintf(nullptr, 0, format.c_str(), args ...) + 1;
+        int size = snprintf(nullptr, 0, format.c_str(), args ...) + 1;
         char buf[size];
 
-        snprintf(buf, size, format.c_str(), args ...);
+        snprintf(buf, size_t(size), format.c_str(), args ...);
         return std::string(buf, buf + size - 1);
     }
 

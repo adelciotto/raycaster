@@ -4,30 +4,44 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-static const int defaultWidth = 64;
-static const int defaultHeight = 64;
-static const int defaultBpp = 4;
-
-Texture::Texture() 
-    : width(defaultWidth),
-      height(defaultHeight),
-      bytesPerPixel(defaultBpp) { }
-
-Texture::Texture(int width, int height) {
-
+namespace {
+    const int defaultWidth = 64;
+    const int defaultHeight = 64;
+    const int defaultBpp = 4;
 }
 
-Texture::Texture(const std::string& file) {
-    fromFile(file);
+Texture::Texture()
+        : width(defaultWidth),
+          height(defaultHeight),
+          bytesPerPixel(defaultBpp) { }
+
+Texture::Texture(const std::string& filename)
+        : IResource(filename) { }
+
+int Texture::getWidth() const {
+    return width;
 }
 
-void Texture::fromFile(const std::string& file) {
+int Texture::getHeight() const {
+    return height;
+}
+
+int Texture::getBytesPerPixel() const {
+    return bytesPerPixel;
+}
+
+uint32_t Texture::getPixel(int x, int y) const {
+    return pixels[height * x + y];
+}
+
+void Texture::setPixel(int x, int y, uint32_t color) { }
+
+void Texture::load() {
     int w, h, bbp;
-    uint8_t *data = stbi_load(file.c_str(), &w, &h, &bbp, 0);
+    uint8_t *data = stbi_load(filename.c_str(), &w, &h, &bbp, 0);
 
     if (data == nullptr) {
-        logger::warn("Image %s could not be loaded\n", file.c_str());
-        return;
+        throw ResourceException("Image could not be loaded", filename);
     }
 
     int length = w * h * bbp;

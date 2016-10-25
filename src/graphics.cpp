@@ -4,16 +4,18 @@
 
 #include "stb_image.h"
 
-static const int defaultBufferWidth = 640;
-static const int defaultBufferHeight = 360;
-static const int bytesPerPixel = 4;
+namespace {
+    const int defaultBufferWidth = 640;
+    const int defaultBufferHeight = 360;
+    const int bytesPerPixel = 4;
 
-static SDL_Renderer *createSDLRenderer(const Window& win, bool vsync);
-static SDL_Texture *createSDLTexture(SDL_Renderer *rend, int width, int height);
-static SDL_Surface *createSDLSurface(int width, int height);
-static void destroySDLRenderer(SDL_Renderer *rend);
-static void destroySDLTexture(SDL_Texture *tex);
-static void destroySDLSurface(SDL_Surface *surface);
+    SDL_Renderer *createSDLRenderer(const Window& win, bool vsync);
+    SDL_Texture *createSDLTexture(SDL_Renderer *rend, int width, int height);
+    SDL_Surface *createSDLSurface(int width, int height);
+    void destroySDLRenderer(SDL_Renderer *rend);
+    void destroySDLTexture(SDL_Texture *tex);
+    void destroySDLSurface(SDL_Surface *surface);
+}
 
 Graphics::Graphics()
     : bufferWidth(defaultBufferWidth),
@@ -169,9 +171,8 @@ void Graphics::setPixel(int x, int y, uint32_t color) {
     if (x < 0 || x >= bufferWidth || y < 0 || y >= bufferHeight) return;
 
     uint32_t *bufp;
-    auto screenPtr = screen.get();
 
-    bufp = (uint32_t *)screenPtr->pixels + y * screenPtr->pitch / bytesPerPixel + x;
+    bufp = (uint32_t *)screen->pixels + y * screen->pitch / bytesPerPixel + x;
     *bufp = color;
 }
 
@@ -204,66 +205,68 @@ void Graphics::drawLetter(unsigned char n, int x, int y, uint32_t color, bool us
     }
 }
 
-static SDL_Renderer *createSDLRenderer(const Window& win, bool vsync) {
-    int flags = SDL_RENDERER_ACCELERATED;
+namespace {
+    SDL_Renderer *createSDLRenderer(const Window &win, bool vsync) {
+        int flags = SDL_RENDERER_ACCELERATED;
 
-    flags = vsync ? flags | SDL_RENDERER_PRESENTVSYNC : flags;
-    return SDL_CreateRenderer(win.getSDLWindow(), -1, flags);
-}
+        flags = vsync ? flags | SDL_RENDERER_PRESENTVSYNC : flags;
+        return SDL_CreateRenderer(win.getSDLWindow(), -1, flags);
+    }
 
-static SDL_Texture *createSDLTexture(SDL_Renderer *rend, int width, int height) {
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
-    SDL_RenderSetLogicalSize(rend, width, height);
-    
-    return SDL_CreateTexture(
-        rend,
-        SDL_PIXELFORMAT_RGBA8888,
-        SDL_TEXTUREACCESS_STREAMING, 
-        width,
-        height
-    );
-}
+    SDL_Texture *createSDLTexture(SDL_Renderer *rend, int width, int height) {
+        SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "nearest");
+        SDL_RenderSetLogicalSize(rend, width, height);
 
-static SDL_Surface *createSDLSurface(int width, int height) {
-    uint32_t rmask, gmask, bmask, amask;
+        return SDL_CreateTexture(
+                rend,
+                SDL_PIXELFORMAT_RGBA8888,
+                SDL_TEXTUREACCESS_STREAMING,
+                width,
+                height
+        );
+    }
+
+    SDL_Surface *createSDLSurface(int width, int height) {
+        uint32_t rmask, gmask, bmask, amask;
 
 // SDL interprets each pixel as a 32-bit number, so our masks must depend
 // on the endianness (byte order) of the machine.
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN
-    rmask = 0xff000000;
-    gmask = 0x00ff0000;
-    bmask = 0x0000ff00;
-    amask = 0x000000ff;
+        rmask = 0xff000000;
+        gmask = 0x00ff0000;
+        bmask = 0x0000ff00;
+        amask = 0x000000ff;
 #else
-    rmask = 0x000000ff;
-    gmask = 0x0000ff00;
-    bmask = 0x00ff0000;
-    amask = 0xff000000;
+        rmask = 0x000000ff;
+        gmask = 0x0000ff00;
+        bmask = 0x00ff0000;
+        amask = 0xff000000;
 #endif
 
-    return SDL_CreateRGBSurface(
-        0,
-        width,
-        height,
-        32,
-        rmask,
-        gmask,
-        bmask,
-        amask
-    );
-}
+        return SDL_CreateRGBSurface(
+                0,
+                width,
+                height,
+                32,
+                rmask,
+                gmask,
+                bmask,
+                amask
+        );
+    }
 
-static void destroySDLRenderer(SDL_Renderer *rend) {
-    SDL_DestroyRenderer(rend);
-    logger::info("SDL Renderer destroyed\n");
-}
+    void destroySDLRenderer(SDL_Renderer *rend) {
+        SDL_DestroyRenderer(rend);
+        logger::info("SDL Renderer destroyed\n");
+    }
 
-static void destroySDLTexture(SDL_Texture *tex) {
-    SDL_DestroyTexture(tex);
-    logger::info("SDL Texture destroyed\n");
-}
+    void destroySDLTexture(SDL_Texture *tex) {
+        SDL_DestroyTexture(tex);
+        logger::info("SDL Texture destroyed\n");
+    }
 
-static void destroySDLSurface(SDL_Surface *surface) {
-    SDL_FreeSurface(surface);
-    logger::info("SDL Surface destroyed\n");
+    void destroySDLSurface(SDL_Surface *surface) {
+        SDL_FreeSurface(surface);
+        logger::info("SDL Surface destroyed\n");
+    }
 }

@@ -1,7 +1,7 @@
-#include "application.h"
+#include "raycaster.h"
 
 int main(int argc, char **argv) {
-    Application app(argc, argv);
+    Raycaster game;
 
     return EXIT_SUCCESS;
 }

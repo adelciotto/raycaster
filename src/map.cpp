@@ -8,36 +8,39 @@
 #include "color.h"
 #include "texture.h"
 #include "json_parser.h"
+#include "resource_loader.h"
 
-static const int defaultMapWidth = 24;
-static const int defaultMapHeight = 24;
-static const int defaultWorldMap[defaultMapWidth * defaultMapHeight] = {
-    4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,7,7,7,7,7,7,7,7,
-    4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,7,
-    4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,
-    4,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,
-    4,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,7,
-    4,0,4,0,0,0,0,5,5,5,5,5,5,5,5,5,7,7,0,7,7,7,7,7,
-    4,0,5,0,0,0,0,5,0,5,0,5,0,5,0,5,7,0,0,0,7,7,7,1,
-    4,0,6,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,0,0,0,8,
-    4,0,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7,1,
-    4,0,8,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,0,0,0,8,
-    4,0,0,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,7,7,7,1,
-    4,0,0,0,0,0,0,5,5,5,5,0,5,5,5,5,7,7,7,7,7,7,7,1,
-    6,6,6,6,6,6,6,6,6,6,6,0,6,6,6,6,6,6,6,6,6,6,6,6,
-    8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,
-    6,6,6,6,6,6,0,6,6,6,6,0,6,6,6,6,6,6,6,6,6,6,6,6,
-    4,4,4,4,4,4,0,4,4,4,6,0,6,2,2,2,2,2,2,2,3,3,3,3,
-    4,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,0,0,0,2,
-    4,0,0,0,0,0,0,0,0,0,0,0,6,2,0,0,5,0,0,2,0,0,0,2,
-    4,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,2,0,2,2,
-    4,0,6,0,6,0,0,0,0,4,6,0,0,0,0,0,5,0,0,0,0,0,0,2,
-    4,0,0,5,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,2,0,2,2,
-    4,0,6,0,6,0,0,0,0,4,6,0,6,2,0,0,5,0,0,2,0,0,0,2,
-    4,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,0,0,0,2,
-    4,4,4,4,4,4,4,4,4,4,1,1,1,2,2,2,2,2,2,3,3,3,3,3
-};
-static const int collisionOffset = 4;
+namespace {
+    const int defaultMapWidth = 24;
+    const int defaultMapHeight = 24;
+    const int defaultWorldMap[defaultMapWidth * defaultMapHeight] = {
+            4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,7,7,7,7,7,7,7,7,
+            4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,7,
+            4,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,
+            4,0,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,
+            4,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,7,0,0,0,0,0,0,7,
+            4,0,4,0,0,0,0,5,5,5,5,5,5,5,5,5,7,7,0,7,7,7,7,7,
+            4,0,5,0,0,0,0,5,0,5,0,5,0,5,0,5,7,0,0,0,7,7,7,1,
+            4,0,6,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,0,0,0,8,
+            4,0,7,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,7,7,7,1,
+            4,0,8,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,0,0,0,8,
+            4,0,0,0,0,0,0,5,0,0,0,0,0,0,0,5,7,0,0,0,7,7,7,1,
+            4,0,0,0,0,0,0,5,5,5,5,0,5,5,5,5,7,7,7,7,7,7,7,1,
+            6,6,6,6,6,6,6,6,6,6,6,0,6,6,6,6,6,6,6,6,6,6,6,6,
+            8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,4,
+            6,6,6,6,6,6,0,6,6,6,6,0,6,6,6,6,6,6,6,6,6,6,6,6,
+            4,4,4,4,4,4,0,4,4,4,6,0,6,2,2,2,2,2,2,2,3,3,3,3,
+            4,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,0,0,0,2,
+            4,0,0,0,0,0,0,0,0,0,0,0,6,2,0,0,5,0,0,2,0,0,0,2,
+            4,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,2,0,2,2,
+            4,0,6,0,6,0,0,0,0,4,6,0,0,0,0,0,5,0,0,0,0,0,0,2,
+            4,0,0,5,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,2,0,2,2,
+            4,0,6,0,6,0,0,0,0,4,6,0,6,2,0,0,5,0,0,2,0,0,0,2,
+            4,0,0,0,0,0,0,0,0,4,6,0,6,2,0,0,0,0,0,2,0,0,0,2,
+            4,4,4,4,4,4,4,4,4,4,1,1,1,2,2,2,2,2,2,3,3,3,3,3
+    };
+    const int collisionOffset = 2;
+}
 
 Map::Map()
     : player(nullptr),
@@ -57,14 +60,14 @@ void Map::create(Player *p, const std::string& file) {
 }
 
 void Map::loadTextures() {
-    textures[0].fromFile("assets/textures/texture-0.png");
-    textures[1].fromFile("assets/textures/texture-1.png");
-    textures[2].fromFile("assets/textures/texture-2.png");
-    textures[3].fromFile("assets/textures/texture-3.png");
-    textures[4].fromFile("assets/textures/texture-4.png");
-    textures[5].fromFile("assets/textures/texture-5.png");
-    textures[6].fromFile("assets/textures/texture-6.png");
-    textures[7].fromFile("assets/textures/texture-7.png");
+    textures[0] = ResourceLoader::instance().get<Texture>("tex0");
+    textures[1] = ResourceLoader::instance().get<Texture>("tex1");
+    textures[2] = ResourceLoader::instance().get<Texture>("tex2");
+    textures[3] = ResourceLoader::instance().get<Texture>("tex3");
+    textures[4] = ResourceLoader::instance().get<Texture>("tex4");
+    textures[5] = ResourceLoader::instance().get<Texture>("tex5");
+    textures[6] = ResourceLoader::instance().get<Texture>("tex6");
+    textures[7] = ResourceLoader::instance().get<Texture>("tex7");
 }
 
 void Map::loadFile(const std::string& file) {
@@ -104,31 +107,37 @@ void Map::loadFile(const std::string& file) {
     logger::info("Map %s loaded with w: %d, h: %d\n", file.c_str(), mapWidth, mapHeight);
 }
 
-void Map::update(double delta) {
-    resolveCollisions(delta);
-    player->update(delta);
+void Map::update() {
+    resolveCollisions();
+    player->update();
 }
 
-void Map::resolveCollisions(double delta) {
+void Map::resolveCollisions() {
     const auto vel = player->velocity;
     const auto pos = player->position;
     const auto dir = player->direction;
     auto checkWall = [&](const mathutils::Vec2& heading) -> void {
-        if (worldMap[mapWidth * int(heading.x) + int(pos.y)]) player->velocity.x = 0;
-        if (worldMap[mapWidth * int(pos.x) + int(heading.y)]) player->velocity.y = 0;
+        if (getMapIndex(int(heading.x), int(pos.y))) player->velocity.x = 0;
+        if (getMapIndex(int(pos.x), int(heading.y))) player->velocity.y = 0;
     };
 
     // Really simple player-wall collision.
     if (player->isMovingForwards()) {
-        const auto headingPos = pos + dir * vel*delta*collisionOffset;
+        const auto headingPos = pos + dir * vel*collisionOffset;
 
         checkWall(headingPos);
     }
     if (player->isMovingBackwards()) {
-        const auto headingPos = pos - dir * vel*delta*-collisionOffset;
+        const auto headingPos = pos - dir * vel*-collisionOffset;
 
         checkWall(headingPos);
     }
+}
+
+int Map::getMapIndex(int x, int y) const {
+    size_t idx = mapWidth * x + y;
+
+    return idx < worldMap.size() ? worldMap[idx] : 0;
 }
 
 void Map::draw(Graphics& graphics) {
@@ -192,7 +201,7 @@ double Map::castRay(double cameraX) {
             side = 1;
         }
 
-        if (worldMap[mapWidth * mapX + mapY] > 0) {
+        if (getMapIndex(mapX, mapY) > 0) {
             hit = true;
         }
     }
@@ -219,7 +228,7 @@ void Map::drawWall(Graphics& graphics, int x, double distance) {
 
 void Map::drawFlatColoredWall(Graphics& graphics, int x, int drawStart, int drawEnd) {
     Color color(0x000000FF);
-    switch (worldMap[mapWidth * mapX + mapY]) {
+    switch (getMapIndex(mapX, mapY)) {
         case 1: color.set(0xFF0000FF); break;
         case 2: color.set(0x00FF00FF); break;
         case 3: color.set(0x0000FFFF); break;
@@ -235,8 +244,10 @@ void Map::drawFlatColoredWall(Graphics& graphics, int x, int drawStart, int draw
 
 
 void Map::drawTexturedWall(Graphics& graphics, int x, double distance, int lineHeight, int drawStart, int drawEnd) {
-    int texNum = worldMap[mapWidth * mapX + mapY] - 1;
-    const Texture& tex = textures[texNum];
+    int texNum = getMapIndex(mapX, mapY) - 1;
+    const Texture& tex = *textures[texNum];
+    int texWidth = tex.getWidth();
+    int texHeight = tex.getHeight();
     double wallX;
 
     if (side == 0) {
@@ -247,17 +258,17 @@ void Map::drawTexturedWall(Graphics& graphics, int x, double distance, int lineH
 
     wallX -= std::floor(wallX);
 
-    int texX = int(wallX * double(tex.width));
+    int texX = int(wallX * double(texWidth));
 
     if ((side == 0 && rayDir.x > 0) ||
         (side == 1 && rayDir.y > 0)) {
-        texX = tex.width - texX - 1;
+        texX = texWidth - texX - 1;
     }     
 
     for (int y = drawStart; y < drawEnd; y++) {
         int d = y * 256 - graphics.height() * 128 + lineHeight * 128;
-        int texY = ((d * tex.height) / lineHeight) / 256;
-        uint32_t color = tex.pixels[tex.height * texX + texY];
+        int texY = ((d * texHeight) / lineHeight) / 256;
+        uint32_t color = tex.getPixel(texX, texY);
 
         if (side == 1) {
             color = (color & 0xFEFEFEFE) >> 1;

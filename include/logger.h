@@ -13,7 +13,7 @@ namespace logger {
 
     template<typename... Args>
     inline void debug(const std::string& format, Args... args) {
-        SDL_LogDebug(format.c_str(), args...);
+        SDL_LogDebug(SDL_LOG_CATEGORY_APPLICATION, format.c_str(), args...);
     }
 
     template<typename... Args>

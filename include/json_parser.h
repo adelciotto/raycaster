@@ -58,6 +58,10 @@ public:
         }
     }
 
+    template int get(const std::string& name, const int& defaultValue) const {
+        return (int)get<double>(name, defaultValue);
+    }
+
 private:
     picojson::value jsonVal;
     picojson::value::object rootObject;
